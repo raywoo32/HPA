@@ -1,0 +1,14 @@
+Package: rpt
+Type: Package
+Title: R Package Template
+Version: 0.1.0
+Author: Boris Steipe
+Maintainer: Boris Steipe <boris.steipe@utoronto.ca>
+Description: rpt contains an easy to adapt set of files for R package
+             development, loosely based on Hadley Wickham's
+             R-packages book.
+License: GPL-3
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
