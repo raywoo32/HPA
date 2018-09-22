@@ -24,6 +24,6 @@ Some useful keyboard shortcuts for package authoring:
 
 
 Load the package (outside of this project) with:
-    `devtools::install_github(",your user name>/<your package name>")`
+    `devtools::install_github("<your user name>/<your package name>")`
 
 
