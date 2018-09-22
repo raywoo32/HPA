@@ -7,8 +7,9 @@ Maintainer: Boris Steipe <boris.steipe@utoronto.ca>
 Description: rpt contains an easy to adapt set of files for R package
              development, loosely based on Hadley Wickham's
              R-packages book.
-License: GPL-3
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests:
     testthat
+RoxygenNote: 6.0.1

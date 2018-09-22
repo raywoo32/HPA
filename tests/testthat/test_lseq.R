@@ -14,7 +14,7 @@ tmp <- c(  1.0
 # ==== END SETUP AND PREPARE ===================================================
 
 test_that("corrupt input generates errors",  {
-  expect_error(lseq(), "argument \"from\" is missing, with no default")
+  expect_error(lseq(), "argument \"x\" is missing, with no default")
   expect_error(lseq(0,10), "'from' must be a finite number")
   expect_error(lseq(10,0), "'to' must be a finite number")
 })
