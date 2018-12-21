@@ -159,5 +159,3 @@ Load the package (outside of this project) with:
 <b id="af1">1</b> Empty repositories by convention have a ```.git``` extension to the repository name, repositories with contents have no extension: the name indicates the repository directory and that directory contains the ```.git``` file. Therefore your package should **NOT** be named ```<package>.git``` although links to your repository on GitHub seem to be correctly processed with both versions. [↩](#a1).
 
 <!-- END -->
-
-
