@@ -1,6 +1,10 @@
 # ```rpt```
 #### (**R** **P**ackage **T**emplate)</div>
 
+<style type="text/css">
+span.greenBg {background-color:#DDFFDD;}
+span.redBg {background-color:#FFDDDD;}
+</style>
 
 ----
 
@@ -97,7 +101,7 @@ In this step we modify the ```rpt``` files to make this your own package.
 #### ```DESCRIPTION```
 
 <pre><tt>
- Package: <span style="background-color:#FFDDDD;">rpt</span> &larr; <span style="background-color:#DDFFDD;">&lt;your-package-name&gt;</span>
+ Package: <span class="redBg">rpt</span> &larr; <span class="greenBg">&lt;your-package-name&gt;</span>
  Type: Package
 </tt></pre>
 
