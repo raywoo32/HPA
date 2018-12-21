@@ -105,6 +105,11 @@ In this step we modify the ```rpt``` files to make this your own package.
  Type: Package
 </tt></pre>
 
+```diff
+-      Package: rpt
++      Package: <your-package-name>
+```
+
 #### ```.Rbuildignore```
 
 
