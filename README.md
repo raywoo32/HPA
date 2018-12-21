@@ -97,7 +97,7 @@ In this step we modify the ```rpt``` files to make this your own package.
 #### ```DESCRIPTION```
 
 <pre><tt>
- Package: <span style="color:#00FF00;">rpt</span> &larr; <span style="color:#FF0000;">&lt;your-package-name&gt;</span>
+ Package: <span style="background-color:#FFDDDD;">rpt</span> &larr; <span style="background-color:#DDFFDD;">&lt;your-package-name&gt;</span>
  Type: Package
 </tt></pre>
 
