@@ -1,10 +1,6 @@
 # ```rpt```
-#### (**R** **P**ackage **T**emplate)</div>
 
-<style type="text/css">
-span.greenBg {background-color:#DDFFDD;}
-span.redBg {background-color:#FFDDDD;}
-</style>
+#### (**R** **P**ackage **T**emplate)
 
 ----
 
@@ -100,14 +96,30 @@ In this step we modify the ```rpt``` files to make this your own package.
 
 #### ```DESCRIPTION```
 
-<pre><tt>
- Package: <span class="redBg">rpt</span> &larr; <span class="greenBg">&lt;your-package-name&gt;</span>
- Type: Package
-</tt></pre>
+Modify the ```DESCRIPTION``` file as follows:
 
 ```diff
 -      Package: rpt
-+      Package: <your-package-name>
++      Package: {your package name}
+Type: Package
+-      Title: R Package Template
++      Title: {a title for your package}
+Version: 0.1.0
+-      Author: Boris Steipe
++      Author: {your-name}
+-      Maintainer: Boris Steipe <boris.steipe@utoronto.ca>
++      Maintainer: {your-name} <{your.name@your.email.host}>
+-      Description: rpt contains an easy to adapt set of files for R package
+-                   development, loosely based on Hadley Wickham's
+-                   R-packages book.
++      Description: {A short description of the purpose of your package}
+License: file LICENSE
+Encoding: UTF-8
+LazyData: true
+Suggests:
+    testthat
+RoxygenNote: 6.0.1
+
 ```
 
 #### ```.Rbuildignore```
