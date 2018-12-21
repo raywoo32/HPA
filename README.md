@@ -100,20 +100,21 @@ Modify the ```DESCRIPTION``` file as follows:
 
 ```diff
 -      Package: rpt
-+      Package: {your package name}
++      Package: <your package name>
 Type: Package
 -      Title: R Package Template
-+      Title: {a title for your package}
++      Title: <a title for your package>
 Version: 0.1.0
--      Author: Boris Steipe
-+      Author: {your-name}
--      Maintainer: Boris Steipe <boris.steipe@utoronto.ca>
-+      Maintainer: {your-name} <{your.name@your.email.host}>
+Authors@R: c(
+    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = "aut"),
+-   person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = "cre")
++   person("<Your>", "<Name>", email = "<your.email@host.domain>", role = c("aut","cre")
+    )
 -      Description: rpt contains an easy to adapt set of files for R package
 -                   development, loosely based on Hadley Wickham's
 -                   R-packages book.
 +      Description: {A short description of the purpose of your package}
-License: file LICENSE
+License: MIT + file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests:
@@ -122,12 +123,36 @@ RoxygenNote: 6.0.1
 
 ```
 
-#### ```.Rbuildignore```
+A note on attribution: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package. I have licensed ```rpt``` under the MIT license, which requires attribution. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. The ultimate goal is for you to replace all my work over time with your own work, dilute out my contributions until they become insignificant, and at some point (perhaps) to remove my attributions, while possibly adding attributions for others. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than author and/or licensor. Spend some time getting this right, attribution is the currency of the FOSS (Free and Open Source Software) world which makes all of our work possible, and poor attribution habits reflect poorly on your professionalism.
+
+For details, in particular when to assign the ```aut``` (author), ```cre``` (creator/maintainer), and ```ctb``` (contributor) roles, see the [Package metadata chapter](http://r-pkgs.had.co.nz/description.html) in Wickham's book, and the [DESCRIPTION section](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file) of the CRAN "Writing R Extensions" manual.
 
 
+#### ```LICENSE```
 
+Modify the ```LICENSE``` file as follows:
 
-Now restart your R session, simply by selecting .
+```diff
+MIT License
+
+Copyright (c) 2018 Boris Steipe (boris.steipe@utoronto.ca)
++  Copyright (c) 2019 <Your.Name> (<your.email@host.domain>)
+
+Permission is hereby granted, free of charge, ...
+```
+
+#### ```rpt.Rproj```
+
+You already have a ```<your-package-name>.Rproj``` configuration file for RStudio in the main directory. You can either overwrite that with the options defined in ```rpt.Rproj```, or set the options individually under **Tools** ▷ **Project options...** and delete ```rpt.Rproj```. ```rpt.Rproj``` sets the following project options
+
+- A...
+- B ...
+
+To implement them, to replace your original options:
+- do this
+- then that.
+
+Now restart your R session, simply by selecting ...
 
 
 
@@ -177,6 +202,6 @@ Load the package (outside of this project) with:
 - Syntax for footnotes in markdown documents was suggested by _Matteo_ [on Stackoverflow](https://stackoverflow.com/questions/25579868/how-to-add-footnotes-to-github-flavoured-markdown).
 
 ----
-<b id="af1">1</b> Empty repositories by convention have a ```.git``` extension to the repository name, repositories with contents have no extension: the name indicates the repository directory and that directory contains the ```.git``` file. Therefore your package should **NOT** be named ```<package>.git``` although links to your repository on GitHub seem to be correctly processed with both versions. [↩](#a1).
+<b id="af1">1</b> Empty repositories by convention have a ```.git``` extension to the repository name, repositories with contents have no extension: the name indicates the repository directory and that directory contains the ```.git``` file. Therefore your package should **NOT** be named ```<package>.git``` although links to your repository on GitHub seem to be correctly processed with both versions. For more discussion, see [here](https://stackoverflow.com/questions/11068576/why-do-some-repository-urls-end-in-git-while-others-dont) [↩](#a1).
 
 <!-- END -->
