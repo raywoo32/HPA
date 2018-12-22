@@ -210,12 +210,25 @@ To implement these options:
 
 **Validate**
 
-The _Environment_ pane has a **Build** tab.
+The _Environment_ pane should now have a **Build** tab.
 
 &nbsp;
 
 ### 5. Save, check, commit, and push
-Save, check, commit, and push to the ```master``` branch on GitHub.
+
+It's time to complete the first development cycle: save, check, commit, and push to the ```master``` branch on GitHub.
+
+1. **Save** all modified documents.
+2. **Check** your package. Click on the **Build** tab, then click on the **Check** icon. This runs package checking code that confirms that all required files are present and correctly formatted, and all tests pass. See below.
+3. Once your package check has passed without any errors, warnings or notes, click on the _Version control icon_ in the editor window menu and choose **Commit...**, or choose **Tools** ▷ **Version Control** ▷ **Commit...** from the menu.
+4. In the version control window, check the box next to all changed files to "stage" them, enter "Initial Commit" as your "Commit message" and click **Commit**. 5. Click the green **Push** up-arrow to synchronize your local repository with GitHub.
+6. Navigate to your GitHub repository, reload the page, and confirm that your edited files have arrived.
+
+
+
+
+, check, commit, and push to the ```master``` branch on GitHub.
+
 
     BiocInstaller::biocLite("BiocCheck")
     
@@ -256,10 +269,10 @@ Load the package (outside of this project) with:
 ...
 
 # Notes
-- Syntax for footnotes in markdown documents was suggested by _Matteo_ [on Stackoverflow](https://stackoverflow.com/questions/25579868/how-to-add-footnotes-to-github-flavoured-markdown).
+- Syntax for footnotes in markdown documents was suggested by _Matteo_ [on Stackoverflow](https://stackoverflow.com/questions/25579868/how-to-add-footnotes-to-github-flavoured-markdown). (Regrettably, the links between footnote references and text don't work on GitHub.)
 
 ----
-<b id="af1">1</b> A good way to begin this process is to first browse through [Hadley Wickham's book](http://r-pkgs.had.co.nz) to get an idea of the general layout of packages, then build a minimal package yourself, and then use the book, the CRAN policies and the Bioconductor policies to hone and reine what you have done. You need a bit of knowledge to get you started, but after that learning is most effictive if you learn in the context of application.  [↩](#a1).
+<b id="af1">1</b> A good way to begin this process is to first browse through [Hadley Wickham's book](http://r-pkgs.had.co.nz) to get an idea of the general layout of packages, then build a minimal package yourself, and then use the book, and the CRAN policies to hone and refine what you have done. You need a bit of knowledge to get you started, but after that, learning is most effective if you learn what you need in the context of applying it.  [↩](#a1).
 
 <b id="af2">2</b> Empty repositories by convention have a ```.git``` extension to the repository name, repositories with contents have no extension: the name indicates the repository directory and that directory contains the ```.git``` file. Therefore your package should **NOT** be named ```<package>.git``` although links to your repository on GitHub seem to be correctly processed with both versions. For more discussion, see [here](https://stackoverflow.com/questions/11068576/why-do-some-repository-urls-end-in-git-while-others-dont) [↩](#a2)
 
