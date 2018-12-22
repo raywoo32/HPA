@@ -28,10 +28,11 @@
 
 .onAttach <- function(libname, pkgname) {
   # Startup message
-  m <- character()
-  m[1] <- sprintf("\nWelcome: this is the %s package.\n", pkgname)
-  m[2] <- sprintf("Author(s): %s\n", packageDescription(pkgname)$Author)
-  m[3] <- sprintf("Maintainer: %s\n", packageDescription(pkgname)$Maintainer)
+  m <- sprintf("\nWelcome: this is the %s package.\n", pkgname)
+  m <- c(m, sprintf("Author(s):\n  %s\n",
+                  utils::packageDescription(pkgname)$Author))
+  m <- c(m, sprintf("Maintainer:\n  %s\n",
+                  utils::packageDescription(pkgname)$Maintainer))
 
   packageStartupMessage(paste(m, collapse=""))
 }

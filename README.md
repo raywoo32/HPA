@@ -54,7 +54,9 @@ Done.
 
 ### 0. Prerequisites
 
-You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/).
+You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also need the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
+
+```install.packages(c("devtools", "testthat"))```
 
 &nbsp;
 
@@ -157,7 +159,7 @@ Type: Package
 +      Title: <a title for your package>
 Version: 0.1.0
 Authors@R: c(
--    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758")),
+-    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758"))
 +     person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut"), comment = c(ORCID = "0000-0002-1134-6758")),
 +     person("<Your>", "<Name>", email = "<your.email@host.domain>", role = c("aut","cre"), comment = c(ORCID = "0000-0000-0000-0000"))
     )
@@ -225,14 +227,20 @@ It's time to complete the first development cycle: save, check, commit, and push
 6. Navigate to your GitHub repository, reload the page, and confirm that your edited files have arrived.
 
 
+**Your package check must pass without errors, warnings or notes.** ```rpt``` passes the checks, and nothing you have done above should have changed this, if it was done correctly. Therefore something is not quite right if the checking code finds anything to complain about. Fix it now. You need a "known-good-state" to revert to for debugging, in case problems arise later on.
 
+**Validate**
 
-, check, commit, and push to the ```master``` branch on GitHub.
+Install your package from github and confirm that it can be loaded. In the console, type:
 
+```R
+devtools::install_github("<your user name>/<your package name>")
+library(<your package name>)
+?lseq
+```
 
-    BiocInstaller::biocLite("BiocCheck")
-    
-    BiocCheck::BiocCheck(file.path("..","rpt"))
+This should install your package, and load the library. Attaching the library runs the ```.onAttach()``` function in ```./R/zzz.R``` and displays the updated package name and authors. The final command accesses the help page for the ```lseq()``` sample function that came with ```rpt``` via R's help system. By confirming that this works, you are exercising functionality that is specific to the way R loads and manages packages and package metadata, none of which would work from information that has merely been left behind in your Workspace during development.
+
 
 ## 6. Develop
 
