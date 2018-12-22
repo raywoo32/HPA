@@ -18,14 +18,15 @@
 &nbsp;
 
 ## Who needs it ...
-R scripts, projects and packages serve different purposes. If you are working with R, all your code should be in **scripts**, all the time. If you are working on a particular project, all of your assets should be coveniently grouped together, in an **RStudio project**. If you believe in reproducible research - and I really hope you do - your project should be under **version control**. And if your project is about developing a tool or workflow for your labmates / peers / colleagues, it is most conveniently deployed as an **R package** and shared via **GitHub**. But since developing your _package_ is also a _project_, and coding the project requires _scripts_, different objectives must all be satisfied at the same time, and that takes a bit of care and forethought. ```rpt``` will get you started with a standard setup of:
+R scripts, projects and packages serve different purposes. If you are working with R, all your code should be in **scripts**, all the time. If you are working on a particular project, all of your assets should be coveniently grouped together, in an **RStudio project**. If you believe in reproducible research - and I really hope you do - your project should be under **version control** and **continuously tested**. And if your project is about developing a tool or workflow for your labmates / peers / colleagues, it is most conveniently deployed as an **R package** and shared via **GitHub**. But since developing your _package_ is also a _project_, and coding the project requires _scripts_, different objectives must all be satisfied at the same time, and that takes a bit of care and forethought. ```rpt``` will get you started with a standard setup of:
 
 * an R Studio project on your local machine,
 * which is version controlled,
 * and shared on GitHub,
 * and contains the directory structures and files for a CRAN/Bioconductor compatible R package,
+* and contains automated testing code,
 * and can be installed by others from GitHub using standard tools,
-* and contains this ```README``` file that explains how it is done.
+* and includes this ```README``` file that explains how all of this is used.
 
 &nbsp;
 
@@ -54,9 +55,11 @@ Done.
 
 ### 0. Prerequisites
 
-You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also need the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
+You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also download the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
 
-```install.packages(c("devtools", "testthat"))```
+```R
+install.packages(c("devtools", "testthat"))
+```
 
 &nbsp;
 
@@ -107,45 +110,47 @@ Download a ZIP archive of ```rpt``` and copy all the files over to your project 
 
 **Validate**
 
-In RStudio, open the ```./inst/extdata/dev``` directory. Open the file ```rptTwee.R``` and **source** it. Then type ```rptTwee()``` into the console. You should get a directory tree that looks approximately like this.
+In RStudio, open the ```./dev``` directory. Open the file ```rptTwee.R``` and **source** it. Then type ```rptTwee()``` into the console. You should get a directory tree that looks approximately like this.
 
 ```
 -- <your-package-name>
    |__.gitignore
    |__.Rbuildignore
    |__DESCRIPTION
+   |__dev
+      |__functionTemplate.R
+      |__mdTOC.R
+      |__rptTwee.R
    |__inst
       |__extdata
-         |__dev
-            |__functionTemplate.R
-            |__mdTOC.R
-            |__rptTwee.R
+         |__test-lseq.dat
       |__scripts
          |__scriptTemplate.R
    |__LICENSE
    |__man
       |__lseq.Rd
-      |__NOSUCH.maf.Rd
    |__NAMESPACE
    |__R
-      |__data.R
       |__lseq.R
       |__zzz.R
    |__README.md
+   |__<your-package-name>.Rproj
    |__rpt.Rproj
    |__tests
       |__testthat
-      |__testthat.R
          |__test_lseq.R
+      |__testthat.R
 ```
 
-If directories or files are missing, figure out where you went wrong. Note: in addition to the files above, you should also see the ```<your-package-name>.Rproj``` file.
+If directories or files are missing, figure out where you went wrong.
 
 &nbsp;
 
 ### 4. Customize
 
 Modify the ```rpt``` files to make this your own package.
+
+&nbsp;
 
 #### ```DESCRIPTION```
 
@@ -176,12 +181,12 @@ RoxygenNote: 6.0.1
 
 ```
 
-A note on attribution: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package. I have licensed ```rpt``` under the MIT license, which requires attribution. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. The  goal is for you to replace all my work over time with your own work, dilute out my contributions until they become insignificant, and at some point (perhaps) to remove my attributions, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than one author and/or licensor. Spend some time getting this right, it's good practice: attribution is the currency of the FOSS (Free and Open Source Software) world which makes all of our work possible; poor attribution habits reflect poorly on your professionalism.
+A note on attribution: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package. I have licensed ```rpt``` under the MIT license, which requires attribution. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. The  goal is for you to replace all my work over time with your own work, dilute out my contributions until they become insignificant, and at some point (perhaps) to remove my attributions, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than one author and/or licensor. A common case is that you want to use a single function from a large package, or functions from a package that are not on CRAN. If this code is published under one of the FOSS (Free and Open Source Software) licenses, you can simply copy the code, include it in your package, and add the author to ```Authors@R``` (plus perhaps adding the license to the LICENSE file). Take the time to get this right, even if you don't really need this immediately it's good practice: attribution is the currency of the FOSS world which makes all of our work possible; poor attribution reflects poorly on your professionalism.
 
 For details, in particular what the ```aut``` (author), ```cre``` (creator/maintainer), and ```ctb``` (contributor) roles mean, and which other fields might be important to you, see the [Package metadata chapter](http://r-pkgs.had.co.nz/description.html) in Hadley Wickham's book, and the [DESCRIPTION section](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file) of the CRAN "Writing R Extensions" manual.
 
-ORCID IDs are an important part of making attribution credible and promoting best practice of reproducible research. If you don't already have a (free!) [**ORCID ID**](https://orcid.org), now is a good time to get one - unless you don't identify as one who "participates in research, scholarship and innovation" at all. An ORCID ID is not a requirement however. 
-
+ORCID IDs are an important part of making attribution credible and promoting best practice of reproducible research. If you don't already have a (free!) [**ORCID ID**](https://orcid.org), now is a good time to get one - unless you don't identify as one who "participates in research, scholarship and innovation" at all. 
+&nbsp;
 
 #### ```LICENSE```
 
@@ -191,10 +196,29 @@ Modify the ```LICENSE``` file and add your name:
 MIT License
 
 Copyright (c) 2018 Boris Steipe (boris.steipe@utoronto.ca)
-+  Copyright (c) 2019 <Your.Name> (<your.email@host.domain>)
++  Copyright (c) 2019 <Your Name> (<your.email@host.domain>)
 
 Permission is hereby granted, free of charge, ...
 ```
+
+&nbsp;
+
+#### ```./tests/testthat.R```
+
+Modify the ```./tests/testthat.R``` file as follows:
+
+```diff
+library(testthat)
+-   library(rpt)
++   library(<your-package-name>)
+
+-   test_check("rpt")
+-   test_check("<your-package-name>")
+
+# [END]
+```
+
+&nbsp;
 
 #### ```rpt.Rproj```
 
@@ -227,7 +251,7 @@ It's time to complete the first development cycle: save, check, commit, and push
 6. Navigate to your GitHub repository, reload the page, and confirm that your edited files have arrived.
 
 
-**Your package check must pass without errors, warnings or notes.** ```rpt``` passes the checks, and nothing you have done above should have changed this, if it was done correctly. Therefore something is not quite right if the checking code finds anything to complain about. Fix it now. You need a "known-good-state" to revert to for debugging, in case problems arise later on.
+**Your package check must pass without errors, warnings or notes.** ```rpt``` passes the checks, and nothing you have done above should have changed this, if it was done correctly. Therefore something is not quite right if the checking code finds anything to complain about. Fix it now. You need a "known-good-state" to revert to, for debugging, in case problems arise later on.
 
 **Validate**
 
@@ -239,27 +263,15 @@ library(<your package name>)
 ?lseq
 ```
 
-This should install your package, and load the library. Attaching the library runs the ```.onAttach()``` function in ```./R/zzz.R``` and displays the updated package name and authors. The final command accesses the help page for the ```lseq()``` sample function that came with ```rpt``` via R's help system. By confirming that this works, you are exercising functionality that is specific to the way R loads and manages packages and package metadata, none of which would work from information that has merely been left behind in your Workspace during development.
+This should install your package, and load the library. Attaching the library runs the ```.onAttach()``` function in ```./R/zzz.R``` and displays the updated package name and authors.<sup id="af5">[5](#f5)</sup> The final command accesses the help page for the ```lseq()``` sample function that came with ```rpt```, via R's help system. By confirming that this works, you are exercising functionality that is specific to the way R loads and manages packages and package metadata, none of which would work from information that has merely been left behind in your Workspace during development.
 
+&nbsp;
 
 ## 6. Develop
 
-If Bioconductor, you need a vignette. Refer to rptPlus.
+You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you.
 
-
-# What's in the box ...
-
-
-# Customization checklist
-
-
------------------------------------------------
-
-Note: you can't push empty directories to your repository. Make sure you keep
-at least one file in every directory that you want to keep during development.
- 
------------------------------------------------
-
+----
 Some useful keyboard shortcuts for package authoring:
 
 * Build and Reload Package:  `Cmd + Shift + B`
@@ -267,20 +279,65 @@ Some useful keyboard shortcuts for package authoring:
 * Test Package:              `Cmd + Shift + T`
 * Check Package:             `Cmd + Shift + E` or `devtools::check()`
 
------------------------------------------------
+&nbsp;
 
+# What's in the box ...
 
-Load the package (outside of this project) with:
-    `devtools::install_github("<your user name>/<your package name>")`
+Here is a list of assets provided with ```rpt``` and why they are included. You can delete everything you don't need, but note: you can't push empty directories to your repository. Make sure you keep at least one file in every directory that you want to keep during development.
+ 
+.gitignore                     <- defines files that should not be committed to the repository
+.Rbuildignore                  <- defines files that should not be included in the package
+DESCRIPTION                    <- the metadata file for your package
+dev                            <- optional: see (Note 1)
+dev/functionTemplate.R         <- optional: see (Note 1)
+dev/rptTwee.R                  <- optional: see (Note 1)
+inst/                          <- optional: see (Note 2)
+inst/extdata/                  <- optional: see (Note 3)
+inst/extdata/test-lseq.dat     <- optional: see (Note 3)
+inst/scripts/                  <- optional: see (Note 4)
+inst/scripts/scriptTemplate.R  <- optional: see (Note 4)
+LICENSE                        <- License(s)
+man/                           <- help files, generated by Roxygen2: don't edit
+NAMESPACE                      <- lists exported functions and data. Generated by Roxygen2: don't edit
+R/                             <- Contains the code for exported functions
+R/lseq.R                       <- a sample function
+R/zzz.R                        <- three functions for package management
+README.md                      <- see (Note 5)
+rpt.Rproj                      <- project options. Rename to <your-package-name>.Rproj
+tests                          <- see (Note 6)
+tests/testthat                 <- contains scripts for tests to be run
+tests/testthat/test_lseq.R     <- a test script for ./R/lseq.R
+tests/testthat.R               <- the script that runs the tests
+
+- **(Note 1)** The ```./dev``` directory. I use this directory to keep all files and assets that I need for development, but that should not be included and distributed in the final package. The directory is mentioned in ```.Rbuildignore```. In ```rpt``` it contains ```./dev/functionTemplate.R```, a template file for writing R functions with a Roxygen2 header, and ```./dev/rptTwee.R```, which was discussed above.
+
+- **(Note 2)** The ```./inst``` directory. Files in this directory are installed, and end up one level "higher" after installation. E.g. the contents of ```./inst/extdata``` is in the folder ```./extdata/``` of an installed package.
+
+- **(Note 3)** The ```./inst/extdata``` directory. This directory commonly contains "extra" data that is used in tests and examples. (Actual package data would go into a top-level ```./data``` directory and needs to be "exported". See [the ```rptPlus``` package](https://github.com/hyginn/rptPlus) for an example.) are installed, and end up one level "higher" after installation. E.g. the contents of ```./inst``` is in the folder ```./extdata/``` of an installed package.a sample data set used in the test for lseq()
+
+- **(Note 4)** The ```./inst/scripts``` directory. Many packages contain sample scripts in addition to the functions they share. Such  scripts go into this directory. ```rpt``` provides ```./inst/scripts/scriptTemplate.R```, a template file to illustrate how to structure an R script.
+
+- **(Note 5)** The file you are reading is the ```README.md``` file for the ```rpt``` package. ```README``` files explain what a package (or directory) contains, ```.md``` is the extension for [markdown](https://guides.github.com/features/mastering-markdown/) formatted text files. Replace the contents of this file with your own (you can keep using the [original on GitHub](https://github.com/hyginn/rpt/blob/master/README.md) as a reference); a nice template for structuring a markdown file is [here](https://gist.github.com/PurpleBooth/109311bb0361f32d87a2).
+
+- **(Note 6)** The ```./tests``` directory contains directories and assets for tests. For details see the [**Testing**](http://r-pkgs.had.co.nz/tests.html) chapter of Hadley Wickham's book. 
+
+&nbsp;
+
+----
 
 # FAQ
-...
+
+##### How can I import Bioconductor packages?
+Work with Bioconductor packages is described in the [```rptPlus```](https://github.com/hyginn/rptPlus) package template.
+
+&nbsp;
 
 # Notes
 - Syntax for footnotes in markdown documents was suggested by _Matteo_ [on Stackoverflow](https://stackoverflow.com/questions/25579868/how-to-add-footnotes-to-github-flavoured-markdown). (Regrettably, the links between footnote references and text don't work on GitHub.)
 
 ----
-<b id="af1">1</b> A good way to begin this process is to first browse through [Hadley Wickham's book](http://r-pkgs.had.co.nz) to get an idea of the general layout of packages, then build a minimal package yourself, and then use the book, and the CRAN policies to hone and refine what you have done. You need a bit of knowledge to get you started, but after that, learning is most effective if you learn what you need in the context of applying it.  [↩](#a1).
+
+<b id="af1">1</b> A good way to begin your devevlopment journey is to first browse through [Hadley Wickham's book](http://r-pkgs.had.co.nz) to get an idea of the general layout of packages, then build a minimal package yourself, and then use the book, and the CRAN policies to hone and refine what you have done. You need a bit of knowledge to get you started, but after that, learning is most effective if you learn what you need in the context of applying it.  [↩](#a1).
 
 <b id="af2">2</b> Empty repositories by convention have a ```.git``` extension to the repository name, repositories with contents have no extension: the name indicates the repository directory and that directory contains the ```.git``` file. Therefore your package should **NOT** be named ```<package>.git``` although links to your repository on GitHub seem to be correctly processed with both versions. For more discussion, see [here](https://stackoverflow.com/questions/11068576/why-do-some-repository-urls-end-in-git-while-others-dont) [↩](#a2)
 
@@ -288,11 +345,14 @@ Load the package (outside of this project) with:
 
 <b id="af4">4</b> A commonly agreed on coding style is to use 80 character lines or shorter. That's often a bit of a challenge when you use spaces around operators, expressive variable names, and 4-space indents. Of those three, the 4-space indents are the most dispensable; using 2-space indents works great and helps keep lines short enough. There seems to be a recent trend towards 2-spaces anyway. As for tabs vs. spaces: I write a lot of code that is meant to be read and studied, thus I need more control over what my users see. Therefore I use spaces, not tabs. YMMV, change your Project Options if you feel differently about this. [↩](#a4)
 
+<b id="af5">5</b> Displaying the startup message (as of this writing) works only once per session due to a long-standing bug in RStudio. (cf. [here](https://github.com/r-lib/devtools/issues/1442)). To display the message, choose **File** ▷ **Recent Projects...** ▷ **<your-package-name>** to reload your project, then type ```library(<your-package-name>)``` into the cosole. [↩](#a5)
+
+&nbsp;
+
 # Further reading
 
 - The [**R Packages** book](http://r-pkgs.had.co.nz/) 
 - The [**CRAN** manual on writing R-extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html)
-- The [Bioconductor package guidelines](https://www.bioconductor.org/developers/package-guidelines/)
 
 
 <!-- END -->

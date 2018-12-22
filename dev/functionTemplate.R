@@ -19,6 +19,8 @@
 #' multiply(1, 1)
 #' multiply(1i, 1i)
 #' multiply(13, 3)
+#' @export
+
 functionName <- function(p, q) {
 
     return(value)
