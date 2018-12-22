@@ -3,8 +3,7 @@ Type: Package
 Title: R Package Template
 Version: 0.1.0
 Authors@R: c(
-    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758")),
-    person("Iakub", "Henschen", email = "boris.steipe@utoronto.ca", role = c("aut"), comment = c(ORCID = "0000-0002-1134-6758"))
+    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758"))
     )
 Description: rpt contains an easy to adapt set of files for R package
              development, loosely based on Hadley Wickham's
