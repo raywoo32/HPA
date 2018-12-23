@@ -7,38 +7,35 @@
 ----
 
 <!-- TOCbelow -->
-* [1 About this package:](#A1)
-    * [1.1 What it is ...](#A2)
-    * [1.2 Who needs it ...](#A3)
-    * [1.3 How it works ...](#A4)
-* [2 Details ...](#A5)
-    * [2.0 Prerequisites](#A6)
-    * [2.1 A new GitHub project.](#A7)
-    * [2.2 A new RStudio project](#A8)
-    * [2.3 Download the ```rpt``` files](#A9)
-    * [2.4 Customize](#A10)
-    * [2.5 Save, check, commit, and push](#A12)
-* [3 Develop](#A13)
-* [4 What's in the box ...](#A14)
-* [5 FAQ](#A15)
-* [6 Notes](#A16)
-* [7 Further reading](#A17)
-* [8 Acknowledgements](#A18)
+1. About this package:<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.1. What it is ...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.2. Who needs it ...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;1.3. How it works ...<br/>
+2. Details ...<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.0. Prerequisites<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.1. A new GitHub project<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.2. A new RStudio project<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.3. Download the ```rpt``` files<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.4. Customize<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;2.5. Save, check, commit, and push<br/>
+3. Develop<br/>
+4. What's in the box ...<br/>
+5. FAQ<br/>
+6. Notes<br/>
+7. Further reading<br/>
+8. Acknowledgements<br/>
 <!-- TOCabove -->
 
 ----
 
 
-<div id='#A1'/>
 # 1 About this package:
 
-<div id='#A2'/>
 ## 1.1 What it is ...
 ```rpt``` is an RStudio project under version control that contains all the assets required in a simple R package. The package loosely follows the principles outlined in Hadley Wickham's [**R Packages** book](http://r-pkgs.had.co.nz/) and is compatible with the [**CRAN** manual on writing R-extensions](https://cran.r-project.org/doc/manuals/r-release/R-exts.html). This is the architecture I use in my courses and workshops at the University of Toronto and elsewhere, it has been battle-tested by students who are quite new to all of this, but it will also be constantly updated.<sup id="af1">[1](#f1)</sup>
 
 &nbsp;
 
-<div id='#A3'/>
 ## 1.2 Who needs it ...
 R scripts, projects and packages serve different purposes. If you are working with R, all your code should be in **scripts**, all the time. If you are working on a particular project, all of your assets should be coveniently grouped together, in an **RStudio project**. If you believe in reproducible research - and I really hope you do - your project should be under **version control** and **continuously tested**. And if your project is about developing a tool or workflow for your labmates / peers / colleagues, it is most conveniently deployed as an **R package** and shared via **GitHub**. But since developing your _package_ is also a _project_, and coding the project requires _scripts_, different objectives must all be satisfied at the same time, and that takes a bit of care and forethought. ```rpt``` will get you started with a standard setup of:
 
@@ -52,7 +49,6 @@ R scripts, projects and packages serve different purposes. If you are working wi
 
 &nbsp;
 
-<div id='#A4'/>
 ## 1.3 How it works ...
 
 **Create an empty project, linked to an empty GitHub repository. Then fill it with the files from ```rpt```. Then start developing.**
@@ -68,7 +64,6 @@ Done.
 
 ----
 
-<div id='#A5'/>
 # 2 Details ...
 
 &nbsp;
@@ -77,7 +72,6 @@ Done.
 
 &nbsp;
 
-<div id='#A6'/>
 ## 2.0 Prerequisites
 
 You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also download the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
@@ -88,8 +82,7 @@ install.packages(c("devtools", "testthat"))
 
 &nbsp;
 
-<div id='#A7'/>
-## 2.1 A new GitHub project.
+## 2.1 A new GitHub project
 
 Create a new, empty repository on GitHub and give it your package name.
 
@@ -104,7 +97,6 @@ Create a new, empty repository on GitHub and give it your package name.
 
 &nbsp;
 
-<div id='#A8'/>
 ## 2.2 A new RStudio project
 
 Create a new RStudio project on your local machine that is linked to your GitHub repository and account.
@@ -126,7 +118,6 @@ Congratulate yourself if this has all worked. If not - don't continue. You need 
 
 &nbsp;
 
-<div id='#A9'/>
 ## 2.3 Download the ```rpt``` files
 
 Download a ZIP archive of ```rpt``` and copy all the files over to your project folder.
@@ -174,7 +165,6 @@ If directories or files are missing, figure out where you went wrong.
 
 &nbsp;
 
-<div id='#A10'/>
 ## 2.4 Customize
 
 Modify the ```rpt``` files to make this your own package.
@@ -270,7 +260,6 @@ The _Environment_ pane should now have a **Build** tab.
 
 &nbsp;
 
-<div id='#A12'/>
 ## 2.5 Save, check, commit, and push
 
 It's time to complete the first development cycle: save, check, commit, and push to the ```master``` branch on GitHub.
@@ -298,7 +287,6 @@ This should install your package, and load the library. Attaching the library ru
 
 &nbsp;
 
-<div id='#A13'/>
 # 3 Develop
 
 You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you.
@@ -313,7 +301,6 @@ Some useful keyboard shortcuts for package authoring:
 
 &nbsp;
 
-<div id='#A14'/>
 # 4 What's in the box ...
 
 Here is a list of assets provided with ```rpt``` and why they are included. You can delete everything you don't need, but note: you can't push empty directories to your repository. Make sure you keep at least one file in every directory that you want to keep during development.
@@ -360,7 +347,6 @@ tests/testthat.R               <- the script that runs the tests
 
 ----
 
-<div id='#A15'/>
 # 5 FAQ
 
 ##### How can I import Bioconductor packages?
@@ -368,7 +354,6 @@ Work with Bioconductor packages is described in the [```rptPlus```](https://gith
 
 &nbsp;
 
-<div id='#A16'/>
 # 6 Notes
 - Syntax for footnotes in markdown documents was suggested by _Matteo_ [on Stackoverflow](https://stackoverflow.com/questions/25579868/how-to-add-footnotes-to-github-flavoured-markdown). (Regrettably, the links between footnote references and text don't work on GitHub.)
 
@@ -386,7 +371,6 @@ Work with Bioconductor packages is described in the [```rptPlus```](https://gith
 
 &nbsp;
 
-<div id='#A17'/>
 # 7 Further reading
 
 - The [**R Packages** book](http://r-pkgs.had.co.nz/) 
@@ -394,7 +378,6 @@ Work with Bioconductor packages is described in the [```rptPlus```](https://gith
 
 &nbsp;
 
-<div id='#A18'/>
 # 8 Acknowledgements
 
 Thanks to my students, especially the BCB410 (Applied Bioinformatics) class of 2018, whose hard work on R packages revealed the need for this template.
