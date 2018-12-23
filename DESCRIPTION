@@ -1,7 +1,7 @@
 Package: rpt
 Type: Package
 Title: R Package Template
-Version: 1.0
+Version: 1.0.0
 Authors@R: c(
     person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758"))
     )
