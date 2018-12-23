@@ -10,10 +10,17 @@
 #' @return A numeric vector.
 #' @seealso \code{\link{seq}}
 #' @examples
-#' plot(c(0.1,10), c(0,1))
-#' abline(v = lseq(0.1, 10, length.out = 20), col="#3366FF66")
+#' lseq(0.1, 10, length.out = 20)   # 20 log-spaced values between 0.1 and 10
+#' # plot a log-spaced grid
+#' lim <- c(0.1, 10)
+#' plot(1, 1, xlim=lim, ylim=lim, type="n", axes=FALSE, xlab="", ylab="")
+#' x <- lseq(0.1, 10, length.out = 10)
+#' abline(v = x, col="#3366FF66")
+#' abline(h = x, col="#3366FF66")
 #' @export
 lseq <- function(from, to, length.out = 10) {
   x <- seq(log(from), log(to), length.out = length.out)
   return(exp(x))
 }
+
+# [END]
