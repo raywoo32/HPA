@@ -17,6 +17,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;2.2. A new RStudio project<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.3. Download the ```rpt``` files<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.4. Customize<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4.1 Getting attribution right
 &nbsp;&nbsp;&nbsp;&nbsp;2.5. Save, check, commit, and push<br/>
 3. Develop<br/>
 4. What's in the box ...<br/>
@@ -42,7 +43,7 @@ R scripts, projects and packages serve different purposes. If you are working wi
 * an R Studio project on your local machine,
 * which is version controlled,
 * and shared on GitHub,
-* and contains the directory structures and files for a CRAN/Bioconductor compatible R package,
+* and contains the directory structures and files for a CRAN compatible R package,
 * and contains automated testing code,
 * and can be installed by others from GitHub using standard tools,
 * and includes this ```README``` file that explains how all of this is used.
@@ -53,14 +54,16 @@ R scripts, projects and packages serve different purposes. If you are working wi
 
 **Create an empty project, linked to an empty GitHub repository. Then fill it with the files from ```rpt```. Then start developing.**
 
-1. Define your package name and create a new GithHub project.
-2. Make a new RStudio project on your local machine that is linked to your GitHub project.
-3. Download a ZIP archive of ```rpt``` and copy all the files over to your project folder.
-4. Customize your files and restart R;
+This is all it takes, but the details take care. You will go through the following steps:
+
+1. Define your package name and create a new GithHub project;
+2. Make a new RStudio project on your local machine that is linked to your GitHub project;
+3. Download a ZIP archive of ```rpt``` and copy all the files over to your project folder;
+4. Customize your files;
 5. Save, check, commit, and push to GitHub;
 6. Start developing.
 
-Done.
+Done. Each step is described in detail below.
 
 ----
 
@@ -74,7 +77,7 @@ Done.
 
 ## 2.0 Prerequisites
 
-You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that can connect to your RStudio projects. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also download the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
+You need a current installation of [**R**](https://www.r-project.org/) and [**RStudio**](https://www.rstudio.com/products/rstudio/download/), ```git```, and a [**GitHub**](https://github.com/) account that **has been set up to connect to your RStudio projects**. If any of this is new to you (or if you wish to brush up on the details), head over to Jenny Bryan's superb tutorial [**Happy Git and GitHub with R**](http://happygitwithr.com/). You should also download the ```devtools``` and ```testthat``` packages from CRAN. In the RStudio console type:
 
 ```R
 install.packages(c("devtools", "testthat"))
@@ -86,7 +89,7 @@ install.packages(c("devtools", "testthat"))
 
 Create a new, empty repository on GitHub and give it your package name.
 
-- First you need to decide on a [**name**](http://r-pkgs.had.co.nz/package.html#naming) for your package. Take care to define it well. Short, memorable, lower-case, and not in conflict with current names on CRAN or Bioconductor.
+- First you need to decide on a [**name**](http://r-pkgs.had.co.nz/package.html#naming) for your package. Take care to define it well. Short, memorable, lower-case, and not in conflict with current names on CRAN or Bioconductor. Head over to [the taskviews on CRAN](https://cran.r-project.org/web/views/) and browse to see good examples.
 - Next, log into your GitHub account.
 - Click on the **(+)** in the top menu bar and select _New repository_.
 - Enter your package name as the repository name.
@@ -101,20 +104,21 @@ Create a new, empty repository on GitHub and give it your package name.
 
 Create a new RStudio project on your local machine that is linked to your GitHub repository and account.
 
-- In RStudio, choose **File** ▷ **New Project...**, select **Version Control** ▷ **Git**. Enter the **Repository URL** you copied in the preceding step, hit your ```tab``` key to autofill the **Project directory name** (it should be the same as your package name), and **Browse** to a parent directory in which you want to keep your RStudio project. Then click **Create Project**.
+- In RStudio, choose **File** ▷ **New Project...**, select **Version Control** ▷ **Git**. Enter the **Repository URL** you copied in the preceding step, hit your ```tab``` key to autofill the **Project directory name** (it should be the same as your package name), and **Browse...** to a parent directory in which you want to keep your RStudio project. Then click **Create Project**.
 
 The project directory will be created, the repository file will be downloaded, a new RStudio session will open in your directory, and R's "working directory" should be set to here.
 
 **Validate:**
 
 1. In the console, type ```getwd()```. This should print the correct directory.
-2. In the files pane, click on ```README.md``` to open the file in the editor. Make a small change (e.g. add the word "test"). Save the file.
-3. Click on the _Version control icon_ in the editor window menu and choose **Commit...**, or choose **Tools** ▷ **Version Control** ▷ **Commit...** from the menu.
-4. In the version control window, check the box next to ```README.md``` to "stage" the file, enter "test" as your "Commit message" and click **Commit**. This commits your edits to your local repository.
-5. Click the green **Push** up-arrow. This synchronizes your local repository with your remote repository on GitHub.
-6. Navigate to your GitHub repository, reload the page, and confirm that your edit has arrived in the ```README.md``` file in your GitHub repository.
+2. Make a small change to the ```README.md``` file, commit it and push it back to the remote repository: 
+    1. In the files pane, click on ```README.md``` to open the file in the editor. Make a small change (e.g. add the word "test"). Save the file.
+    2. Click on the _Version control icon_ in the editor window menu and choose **Commit...**, or choose **Tools** ▷ **Version Control** ▷ **Commit...** from the menu.
+    3. In the version control window, check the box next to ```README.md``` to "stage" the file, enter "test" as your "Commit message" and click **Commit**. This commits your edits to your local repository.
+    4. Click the green **Push** up-arrow. This synchronizes your local repository with your remote repository on GitHub.
+    5. Navigate to your GitHub repository, reload the page, and confirm that your edit has arrived in the ```README.md``` file in your GitHub repository.
 
-Congratulate yourself if this has all worked. If not - don't continue. You need to fix whatever problem has arisen. In my experience, the most frequent issue is that someone has skipped a step that they thought was not important to them.
+Congratulate yourself if this has all worked. If not - don't continue. You need to fix whatever problem has arisen. In my experience, the most frequent issue is that someone has skipped a step that they thought was not important to them. Check carefully whether you have followed all the steps. In particular, if the problem is associated with ```git``` on your machine, or connecting RStudio to your GitHub repository, work through Jenny Bryan's [**Happy Git...**](http://happygitwithr.com/) first.
 
 &nbsp;
 
@@ -124,41 +128,40 @@ Download a ZIP archive of ```rpt``` and copy all the files over to your project 
 
 - Navigate to the GitHub repository for ```rpt``` at (<https://github.com/hyginn/rpt>).
 - Click on the green **Clone or download** button and select **Download ZIP**. This will package the ```rpt``` folder into a ZIP archive which will contain all files, (without the actual repository database, you don't need that), and download it to your computer.
-- Find the ZIP archive in your download folder and unpack it. This will create a folder called ```rpt-master``` which contains all of the ```rpt``` files. (Note:  the creation date of the folder is not today's date, so if your download folder list files by date, the unzipped folder will not be at the top.)
+- Find the ZIP archive in your download folder and unpack it. This will create a folder called ```rpt-master``` which contains all of the ```rpt``` files. (Note:  the creation date of the folder is not today's date, so if your download folder lists files by date, the unzipped folder will not be at the top.)
 - Move all of the files and folders within ```rpt-master``` into your project directory, overwriting any of the files that are already there. You can then delete ```rpt-master``` and the ZIP archive.
 
 **Validate**
 
-In RStudio, open the ```./dev``` directory. Open the file ```rptTwee.R``` and **source** it. Then type ```rptTwee()``` into the console. You should get a directory tree that looks approximately like this.
+In RStudio, open the ```./dev``` directory. Open the file ```rptTwee.R``` and click on  **Source** to load the function. Then type ```rptTwee()``` into the console. You should get a directory tree that looks approximately like this.
 
 ```
--- <your-package-name>
+ -- <your-package-name>/
    |__.gitignore
    |__.Rbuildignore
    |__DESCRIPTION
-   |__dev
+   |__dev/
       |__functionTemplate.R
-      |__mdTOC.R
       |__rptTwee.R
-   |__inst
-      |__extdata
+   |__inst/
+      |__extdata/
          |__test-lseq.dat
-      |__scripts
+      |__scripts/
          |__scriptTemplate.R
    |__LICENSE
-   |__man
+   |__man/
       |__lseq.Rd
    |__NAMESPACE
-   |__R
+   |__R/
       |__lseq.R
       |__zzz.R
    |__README.md
    |__<your-package-name>.Rproj
    |__rpt.Rproj
-   |__tests
-      |__testthat
-         |__test_lseq.R
+   |__tests/
       |__testthat.R
+      |__testthat/
+         |__test_lseq.R
 ```
 
 If directories or files are missing, figure out where you went wrong.
@@ -167,7 +170,7 @@ If directories or files are missing, figure out where you went wrong.
 
 ## 2.4 Customize
 
-Modify the ```rpt``` files to make this your own package.
+Open the following ```rpt``` files in your script-editor, and edit/save them to customize them for your own package:
 
 &nbsp;
 
@@ -177,22 +180,22 @@ Modify the ```DESCRIPTION``` file as follows:
 
 ```diff
 -      Package: rpt
-+      Package: <your package name>
++      Package: <your-package-name>
 Type: Package
 -      Title: R Package Template
 +      Title: <a title for your package>
--      Version: 1.0
+-      Version: 1.1.0
 +      Version: 0.1.0
 Authors@R: c(
 -    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758"))
 +     person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut"), comment = c(ORCID = "0000-0002-1134-6758")),
-+     person("<Your>", "<Name>", email = "<your.email@host.domain>", role = c("aut","cre"), comment = c(ORCID = "0000-0000-0000-0000"))
++     person("<your-given-name>", "<your-family-name>", email = "<your-email-address>", role = c("aut","cre"), comment = c(ORCID = "<your-ORCID-ID>"))
     )
 -      Description: rpt contains an easy to adapt set of files for R package
 -                   development, loosely based on Hadley Wickham's
 -                   R-packages book.
 +      Description: {A short description of the purpose of your package}
-License: MIT + file LICENSE
+License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests:
@@ -200,26 +203,26 @@ Suggests:
 RoxygenNote: 6.0.1
 
 ```
-
-A note on attribution: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package. I have licensed ```rpt``` under the MIT license, which requires attribution. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. The  goal is for you to replace all my work over time with your own work, dilute out my contributions until they become insignificant, and at some point (perhaps) to remove my attributions, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than one author and/or licensor. A common case is that you want to use a single function from a large package, or functions from a package that are not on CRAN. If this code is published under one of the FOSS (Free and Open Source Software) licenses, you can simply copy the code, include it in your package, and add the author to ```Authors@R``` (plus perhaps adding the license to the LICENSE file). Take the time to get this right, even if you don't really need this immediately it's good practice: attribution is the currency of the FOSS world which makes all of our work possible; poor attribution reflects poorly on your professionalism.
-
-For details, in particular what the ```aut``` (author), ```cre``` (creator/maintainer), and ```ctb``` (contributor) roles mean, and which other fields might be important to you, see the [Package metadata chapter](http://r-pkgs.had.co.nz/description.html) in Hadley Wickham's book, and the [DESCRIPTION section](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file) of the CRAN "Writing R Extensions" manual.
-
-ORCID IDs are an important part of making attribution credible and promoting best practice of reproducible research. If you don't already have a (free!) [**ORCID ID**](https://orcid.org), now is a good time to get one - unless you don't identify as one who "participates in research, scholarship and innovation" at all. 
 &nbsp;
 
-#### ```LICENSE```
+### 2.4.1 Getting attribution right
 
-Modify the ```LICENSE``` file and add your name:
+Giving credit is the currency of the FOSS (Free and Open Source Software) world which makes all of our work possible, licensing keeps it free. Take the time to get your attributions and licenses right; even if you think you don't really need this immediately it's good practice for good habits. Don't think you don't have to care: you automatically have a copyright to everything you write, and if you don't license it, no one can legally re-use it. Unfortunately, the common practices for attributing R package authorship are not consistent wherever there is more than one author (which is usually the case in academia). ```rpt``` adopts a consistent approach that is backward compatible with earlier practice.
 
-```diff
-MIT License
+Attribution and licensing only appear to be related. They serve distinct requirements and require distinct and specific mechanisms.
 
-Copyright (c) 2018 Boris Steipe (boris.steipe@utoronto.ca)
-+  Copyright (c) 2019 <Your Name> (<your.email@host.domain>)
+Credible attribution needs to identify **who** authored **what** in a way that that information is conveniently accessible.
 
-Permission is hereby granted, free of charge, ...
-```
+Credible licensing needs to identify **who** has a copyright to **what**, and under **which license** it is released, in a standard document.
+
+- **Who**: all persons referenced in attributions or licenses - whether authors (```aut```), contributors (```ctb```), or other copyright holders (```cph```) - must be unambiguously identified. Since people's names are not unique, there is really only one good way to do this: associate everyone with their ORCID (Open Researcher and Contributor Identifier) ID. ORCID IDs are unique and stable. If you don't already have a (free!) [**ORCID ID**](https://orcid.org), now is a good time to get one - unless you don't identify as one who "participates in research, scholarship and innovation" at all. The common alternative of identifying persons by their e-mail is unique, but not stable. All authors and contributors are referenced in the ```DESCRIPTION``` file and the R packaging system uses standard methods to give credit. For details, in particular what the ```aut``` (author), ```cre``` (creator/maintainer), and ```ctb``` (contributor) roles mean, and which other fields might be important to you, see the [Package metadata chapter](http://r-pkgs.had.co.nz/description.html) in Hadley Wickham's book, and the [DESCRIPTION section](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file) of the CRAN "Writing R Extensions" manual.
+
+
+- **What**: in any multi-author situation you need to specify exactly which files are authored by whom. For **attribution**, add an ```@Author``` tag to the Roxygen header of every source code items. For **licensing**, both the copyright and the licensed contents needs to be identified in the ```LICENSE``` file, and it must include the date (year) since copyright eventually expires. Yes, this is wordy and duplicates information. No, there's no obvious way to avoid that and still be compliant.
+
+- **Which license**: There are many reasons to favour the MIT license over other FOSS licenses, ```rpt``` uses MIT. If you wish to use a different license, or need to include a different license because you are incorporating code that is differently licensed, add the license, the contents it applies to, and the licensors details into a clearly separated section of your LICENSE file.   
+
+- **In practice**: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package and this is reflected in the ```DESCRIPTION``` file. I have licensed ```rpt``` under the MIT license, and the MIT license requires that this information remains associated with the package. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. Over time you remove and replace my contributions with your own work, and at some point you can remove my attributions and copyright claims, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than one author and/or licensor. A common case is that you want to use a single function from a large package, or functions from a package that are not on CRAN. If this code is published under one of the FOSS licenses, you can simply copy the code, include it in your package, add the author to ```Authors@R``` and their copyright information to the LICENSE file. Check the ```DESCRIPTION``` file, the ```LICENSE``` file, and the function headers for examples.
 
 &nbsp;
 
@@ -236,6 +239,20 @@ library(testthat)
 +   test_check("<your-package-name>")
 
 # [END]
+```
+
+&nbsp;
+
+#### ```./tests/testthat/test_Lseq.R```
+
+Modify the ```./tests/testthat/test_lseq.R``` sample file as follows:
+
+```diff
+tmp <- as.numeric(readLines(system.file("extdata",
+                                        "test-lseq.dat",
+-                                       package = "rpt",
++                                       package = "<your-package-name>",
+                                        mustWork = TRUE)))
 ```
 
 &nbsp;
@@ -278,8 +295,8 @@ It's time to complete the first development cycle: save, check, commit, and push
 Install your package from github and confirm that it can be loaded. In the console, type:
 
 ```R
-devtools::install_github("<your user name>/<your package name>")
-library(<your package name>)
+devtools::install_github("<your-user-name>/<your-package-name>")
+library(<your-package-name>)
 ?lseq
 ```
 
@@ -289,7 +306,9 @@ This should install your package, and load the library. Attaching the library ru
 
 # 3 Develop
 
-You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you.
+You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you. If you want to keep template files for reference, move them to the ```./dev``` directory so they will not be included in the package build. Finally, whenever you add new contents, reference it in the ```LICENSE``` file. Whenever you remove one of the original files, remove it from the ```LICENSE``` file. And whenever you modify a function, add your name to any exisitng authors.
+
+&nbsp;
 
 ----
 Some useful keyboard shortcuts for package authoring:
@@ -380,7 +399,7 @@ Work with Bioconductor packages is described in the [```rptPlus```](https://gith
 
 # 8 Acknowledgements
 
-Thanks to my students, especially the BCB410 (Applied Bioinformatics) class of 2018, whose hard work on R packages revealed the need for this template.
+Thanks to my students, especially the BCB410 (Applied Bioinformatics) class of 2018, whose hard work on R packages revealed the need for this template. [Yi Chen](https://orcid.org/0000-0003-1624-2760)'s careful proofreading helped make many points more specific. 
 
 &nbsp;
 
