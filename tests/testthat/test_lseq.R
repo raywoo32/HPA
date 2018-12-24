@@ -1,5 +1,6 @@
 #test_lseq.R
-
+# Author: Boris Steipe <https://orcid.org/0000-0002-1134-6758>
+#
 context("lseq")
 
 # ==== BEGIN SETUP AND PREPARE =================================================
