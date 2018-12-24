@@ -1,21 +1,45 @@
 # rptTwee.R
-#
-# All credit to Jenny Bryan - this function is a simple mod of her
-# twee() function that includes hidden files and allows to exclude
-# directories from the listing.
-# cf. https://gist.github.com/jennybc/2bf1dbe6eb1f261dfe60
-#
-# I use this to print a directory tree of an RStudio project without the
-# .git and .Rproj.user directories, since RStudio does not include those
-# two in the files pane. I also remove the OS specific .DS_store files
-# and I show the parent directory.
-#
-# Boris Steipe <boris.steipe@utoronto.ca>
+
+#' rptTwee
+#'
+#' \code{rptTwee} A simple file-and-directory tree
+#'
+#' A simple utility to print a tree of a directory's files and subdirectories
+#' to the console, suitable to be included in documentation.
+#'
+#' @section Details: this function was inspired by Jenny Bryan's
+#'\href{https://gist.github.com/jennybc/2bf1dbe6eb1f261dfe60}{Twee Gist},
+#' enhanced to include hidden files and exclude some files and directories
+#' from listing. It's primary purpose is to print a directory tree of an
+#' RStudio project, including the parent directory, but without the
+#' .git and .Rproj.user directories (since RStudio does not include those
+#' two in the files pane). \code{rptTwee()} also removes the OS specific
+#' .DS_store files.
+#'
+#' @param path (char) Path of the root directory of the tree. Defaults to the return value of \code{getwd()}.
+#' @param showHidden (bool) if TRUE, show hidden files and directories.
+#' @param showRd  (bool) if TRUE, show the root directoryof the tree.
+#' @param lev (int) Limit depth of recursive listing to \code{lev}. Default
+#'                  to \code{Inf}: don't limit depth.
+#' @param excl (char) Vector of regular expressions for files and directories
+#'                    that are excluded from the tree. Defaults to exclude
+#'                    the files and directories that are not shown in the
+#'                    RStudio files pane.
+#' @return None. Invoked for the side-effect of printing the tree to console.
+#'
+#' @author \href{https://orcid.org/0000-0002-1134-6758}{Boris Steipe} (aut)
+#'
+#' @seealso \code{\link{list.files}}
+#'
+#' @examples
+#' # Tree of the working directory, limited to two levels
+#' rptTwee(levels = 2)
+#'
 
 rptTwee <- function(path = getwd(),
                     showHidden = TRUE,
-                    showPd = TRUE,
-                    level = Inf,
+                    showRd = TRUE,
+                    lev = Inf,
                     excl = c("^\\.git$",
                              "^\\.git/",
                              "^\\.Rproj.user",
@@ -26,32 +50,49 @@ rptTwee <- function(path = getwd(),
                      no.. = TRUE,
                      all.files = showHidden,
                      include.dirs = TRUE)
-  fad <- fad[- grep(paste("(", excl, ")", sep = "", collapse = "|"), fad)]
 
-  if (showPd) {
-    path <- unlist(strsplit(path, "/"))
-    Pd <- path[length(path)]
-    fad <- paste(Pd, fad, sep = "/")
-    fad <- c(Pd, fad)
+  # remove files and directories listed in excl
+  sel <- grepl(paste("(", excl, ")", sep = "", collapse = "|"), fad)
+  fad <- fad[! sel]
+
+  # remove entries that are too deep
+  sel <- unlist(lapply(regmatches(fad, gregexpr("/", fad)), length))  >= lev
+  fad <- fad[! sel]
+
+  if (showRd) {
+    # prepend root directory
+    Rd <- gsub("^.*/(.+)$", "\\1", path)
+    fad <- paste(Rd, fad, sep = "/")
+    fad <- c(Rd, fad)
   }
 
-  fad_split_up <- strsplit(fad, "/")
+  # prepare to add a backslash to directories
+  dirMarks <- ifelse(dir.exists(paste0("../", fad)), "/", "")
 
-  too_deep <- lapply(fad_split_up, length) > level
-  fad_split_up[too_deep] <- NULL
+  # add dirMarks to force correct order for directories and containing files,
+  # then reorder fad and dirMarks
+  fad <- paste0(fad, dirMarks)
+  oFad <- order(fad)
+  fad <- fad[oFad]
+  dirMarks <- dirMarks[oFad]
 
-  jfun <- function(x) {
-    n <- length(x)
-    if(n > 1)
-      x[n - 1] <- "|__"
-    if(n > 2)
-      x[1:(n - 2)] <- "   "
-    x <- if(n == 1) c("-- ", x) else c("   ", x)
-    x
+  # split fad and replace levels with lines
+  fad <- strsplit(fad, "/")
+
+  makeLines <- function(x) {
+    l <- length(x)
+    if (l == 1) {
+      x <- c(" --", x)
+    } else {
+      x <- c(rep("   ", l - 1), "|__", x[l])
+    }
+    return(paste0(x, collapse = ""))
   }
-  fad_subbed_out <- lapply(fad_split_up, jfun)
 
-  cat(unlist(lapply(fad_subbed_out, paste, collapse = "")), sep = "\n")
+  fad <- unlist(lapply(fad, makeLines))
+  fad <- paste0(fad, dirMarks)  # add dirmarks back
+
+  cat(fad, sep = "\n")   # cat result
 
 }
 
