@@ -17,7 +17,7 @@
 &nbsp;&nbsp;&nbsp;&nbsp;2.2. A new RStudio project<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.3. Download the ```rpt``` files<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.4. Customize<br/>
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4.1 Getting attribution right
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;2.4.1 Getting attribution right<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;2.5. Save, check, commit, and push<br/>
 3. Develop<br/>
 4. What's in the box ...<br/>
@@ -63,7 +63,7 @@ This is all it takes, but the details take care. You will go through the followi
 5. Save, check, commit, and push to GitHub;
 6. Start developing.
 
-Done. Each step is described in detail below.
+That's all. Each step is described in detail below.
 
 ----
 
@@ -218,11 +218,13 @@ Credible licensing needs to identify **who** has a copyright to **what**, and un
 - **Who**: all persons referenced in attributions or licenses - whether authors (```aut```), contributors (```ctb```), or other copyright holders (```cph```) - must be unambiguously identified. Since people's names are not unique, there is really only one good way to do this: associate everyone with their ORCID (Open Researcher and Contributor Identifier) ID. ORCID IDs are unique and stable. If you don't already have a (free!) [**ORCID ID**](https://orcid.org), now is a good time to get one - unless you don't identify as one who "participates in research, scholarship and innovation" at all. The common alternative of identifying persons by their e-mail is unique, but not stable. All authors and contributors are referenced in the ```DESCRIPTION``` file and the R packaging system uses standard methods to give credit. For details, in particular what the ```aut``` (author), ```cre``` (creator/maintainer), and ```ctb``` (contributor) roles mean, and which other fields might be important to you, see the [Package metadata chapter](http://r-pkgs.had.co.nz/description.html) in Hadley Wickham's book, and the [DESCRIPTION section](https://cran.r-project.org/doc/manuals/r-release/R-exts.html#The-DESCRIPTION-file) of the CRAN "Writing R Extensions" manual.
 
 
-- **What**: in any multi-author situation you need to specify exactly which files are authored by whom. For **attribution**, add an ```@Author``` tag to the Roxygen header of every source code items. For **licensing**, both the copyright and the licensed contents needs to be identified in the ```LICENSE``` file, and it must include the date (year) since copyright eventually expires. Yes, this is wordy and duplicates information. No, there's no obvious way to avoid that and still be compliant.
+- **What**: in any multi-author situation you need to specify exactly which files are authored by whom. For **attribution**, add an ```@author``` tag to the Roxygen header of every source code items. For **licensing**, both the copyright and the licensed contents needs to be identified in the ```LICENSE``` file, and it must include the date (year), since copyright eventually expires. Yes, this is wordy and duplicates information. No, there's no obvious way to avoid that and still be compliant.
 
-- **Which license**: There are many reasons to favour the MIT license over other FOSS licenses, ```rpt``` uses MIT. If you wish to use a different license, or need to include a different license because you are incorporating code that is differently licensed, add the license, the contents it applies to, and the licensors details into a clearly separated section of your LICENSE file.   
+- **Which license**: There are many reasons to favour the MIT license over other FOSS licenses, ```rpt``` uses MIT. If you wish to use a different license, or need to include a different license because you are incorporating code that is differently licensed, then add the license, the contents it applies to, and the licensors details into a clearly separated section of your LICENSE file.   
 
 - **In practice**: I am the author (```aut```) and maintainer (```cre```) of the ```rpt``` package and this is reflected in the ```DESCRIPTION``` file. I have licensed ```rpt``` under the MIT license, and the MIT license requires that this information remains associated with the package. Therefore my information is listed both in the ```DESCRIPTION``` file, which feeds various mechanisms to document authorship, and the ```LICENSE``` file, which defines how others may modify, distribute and use the code. Over time you remove and replace my contributions with your own work, and at some point you can remove my attributions and copyright claims, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the ```DESCRIPTION``` and the ```LICENSE``` file may contain more than one author and/or licensor. A common case is that you want to use a single function from a large package, or functions from a package that are not on CRAN. If this code is published under one of the FOSS licenses, you can simply copy the code, include it in your package, add the author to ```Authors@R``` and their copyright information to the LICENSE file. Check the ```DESCRIPTION``` file, the ```LICENSE``` file, and the function headers for examples.
+
+Now, having that considered, continue customising your files.
 
 &nbsp;
 
@@ -306,7 +308,7 @@ This should install your package, and load the library. Attaching the library ru
 
 # 3 Develop
 
-You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you. If you want to keep template files for reference, move them to the ```./dev``` directory so they will not be included in the package build. Finally, whenever you add new contents, reference it in the ```LICENSE``` file. Whenever you remove one of the original files, remove it from the ```LICENSE``` file. And whenever you modify a function, add your name to any exisitng authors.
+You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you. If you want to keep template files for reference, move them to the ```./dev``` directory so they will not be included in the package build. Finally, whenever you add new contents, reference it in the ```LICENSE``` file. Whenever you remove one of the original files, remove it from the ```LICENSE``` file. And whenever you modify a function, add your name to any existing authors.
 
 &nbsp;
 
