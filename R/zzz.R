@@ -19,7 +19,7 @@
     # optionsToSet <- !(names(optRpt) %in% names(options()))
     #
     # if(any(optionsToSet)) {
-    #     options(optShi[optionsToSet])
+    #     options(optRpt[optionsToSet])
     # }
 
     invisible()

@@ -5,13 +5,15 @@ context("lseq")
 
 # ==== BEGIN SETUP AND PREPARE =================================================
 #
-# load comparison data from a file in ./inst/exdata
+# load comparison data from a file in ./inst/exdata using pkgName which
+# was defined in helper-functions.R
+
 tmp <- as.numeric(readLines(system.file("extdata",
-                                        "test-lseq.dat",
-                                        package = "rpt",
+                                        "test_lseq.dat",
+                                        package = pkgName,
                                         mustWork = TRUE)))
-# Note: this shows how to keep a file in ./inst/extdata and properly access it
-#       after the package has been installed
+# Note: this demonstrates how to keep a file in ./inst/extdata and properly
+#       access it after the package has been installed
 #
 # ==== END SETUP AND PREPARE ===================================================
 

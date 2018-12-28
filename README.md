@@ -165,6 +165,7 @@ In RStudio, open the `./dev` directory. Open the file `rptTwee.R` and click on  
    |__tests/
       |__testthat.R
       |__testthat/
+         |__helper-functions.R
          |__test_lseq.R
 ```
 
@@ -233,37 +234,6 @@ Credible licensing needs to identify **who** has a copyright to **what**, and un
 - **In practice**: I am the author (`aut`) and maintainer (`cre`) of the `rpt` package and this is reflected in the `DESCRIPTION` file. I have licensed `rpt` under the MIT license, and the MIT license requires that this information remains associated with the package. Therefore my information is listed both in the `DESCRIPTION` file, which feeds various mechanisms to document authorship, and the `LICENSE` file, which defines how others may modify, distribute and use the code. My package is however only a template for your own, you normally would not actually be _using_ the code I wrote. Therefore, the first thing you do is to add yourself as a `person`, and give yourself the `aut` and `cre` roles as author and maintainer, respectively. I am not a co-author even though I have contributed code initially: therefore my role changes to `ctb`. Over time you remove and replace my contributions with your own work, and at some point you can remove my attributions and copyright claims, while possibly adding attributions for other authors of code you use in your package, and collaborators. During this process, both the `DESCRIPTION` and the `LICENSE` file may contain more than one author and/or licensor. A common case is that you want to use a single function from a large package, or functions from a package that are not on CRAN. If this code is published under one of the FOSS licenses, you can simply copy the code, include it in your package, add the author to `Authors@R` - typically in a `ctb` role - and add their copyright information to the LICENSE file. Check the `DESCRIPTION` file, the `LICENSE` file, and the function headers for examples.
 
 Now, having that considered, continue customising your files.
-
-&nbsp;
-
-#### `./tests/testthat.R`
-
-Modify the `./tests/testthat.R` file as follows:
-
-```diff
-library(testthat)
--   library(rpt)
-+   library(<your-package-name>)
-
--   test_check("rpt")
-+   test_check("<your-package-name>")
-
-# [END]
-```
-
-&nbsp;
-
-#### `./tests/testthat/test_lseq.R`
-
-Modify the `./tests/testthat/test_lseq.R` sample file as follows:
-
-```diff
-tmp <- as.numeric(readLines(system.file("extdata",
-                                        "test-lseq.dat",
--                                       package = "rpt",
-+                                       package = "<your-package-name>",
-                                        mustWork = TRUE)))
-```
 
 &nbsp;
 
@@ -357,6 +327,7 @@ README.md                      <- see (Note 5)
 rpt.Rproj                      <- project options. Rename to <your-package-name>.Rproj
 tests                          <- see (Note 6)
 tests/testthat                 <- contains scripts for tests to be run
+tests/testthat/helper-functions.R  <- code runs to set up tests
 tests/testthat/test_lseq.R     <- a test script for ./R/lseq.R
 tests/testthat.R               <- the script that runs the tests
 ```
