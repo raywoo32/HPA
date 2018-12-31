@@ -6,7 +6,7 @@
 
 ----
 
-##### If any of this information is ambiguous, inaccurate, outdated, or incomplete, please [file an issue](https://github.com/hyginn/rpt/issues)!
+**If any of this information is ambiguous, inaccurate, outdated, or incomplete, please check the [most recent version](https://github.com/hyginn/rpt) of the package on GitHub and [file an issue](https://github.com/hyginn/rpt/issues).**
 
 ----
 
@@ -287,7 +287,7 @@ This should install your package, and load the library. Attaching the library ru
 
 # 3 Develop
 
-You are done with configuring your baseline. **Check** your package frequently during commitment, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you. If you want to keep template files for reference, move them to the `./dev` directory so they will not be included in the package build. Finally, whenever you add new contents, reference it in the `LICENSE` file. Whenever you remove one of the original files, remove it from the `LICENSE` file. And whenever you modify a function, add your name to any existing authors.
+You are done with configuring your baseline. **Check** your package frequently during development, and fix all errors right away. Package check errors have a way of interacting with each other that makes them hard to debug, it is best to address each one immediately when it occurs. Also, commit frequently and use meaningful commit messages. Your sanity will thank you. If you want to keep template files for reference, move them to the `./dev` directory so they will not be included in the package build. Finally, whenever you add new contents, reference it in the `LICENSE` file. Whenever you remove one of the original files, remove it from the `LICENSE` file. And whenever you modify a function, add your name to any existing authors.
 
 &nbsp;
 
@@ -336,7 +336,7 @@ tests/testthat.R               <- the script that runs the tests
 
 - **(Note 2)** The `./inst` directory. Files in this directory are installed, and end up one level "higher" after installation. E.g. the contents of `./inst/extdata` is in the folder `./extdata/` of an installed package.
 
-- **(Note 3)** The `./inst/extdata` directory. This directory commonly contains "extra" data that is used in tests and examples. (Actual package data would go into a top-level `./data` directory and needs to be "exported". See [the `rptPlus` package](https://github.com/hyginn/rptPlus) for an example.) are installed, and end up one level "higher" after installation. E.g. the contents of `./inst` is in the folder `./extdata/` of an installed package.a sample data set used in the test for lseq()
+- **(Note 3)** The `./inst/extdata` directory. This directory commonly contains "extra" data that is used in tests and examples. (Actual package data would go into a top-level `./data` directory and needs to be "exported". See [the `rptPlus` package](https://github.com/hyginn/rptPlus) for an example.) Here it contains `inst/extdata/test-lseq.dat`, a sample data set used in the test for `lseq()`.
 
 - **(Note 4)** The `./inst/scripts` directory. Many packages contain sample scripts in addition to the functions they share. Such  scripts go into this directory. `rpt` provides `./inst/scripts/scriptTemplate.R`, a template file to illustrate how to structure an R script.
 

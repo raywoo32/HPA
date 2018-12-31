@@ -35,5 +35,5 @@ segments(x, lim[1], x, lim[2], col="#3366FF66")
 \code{\link{seq}}
 }
 \author{
-\href{https://orcid.org/0000-0002-1134-6758}{Boris Steipe} (aut; License: MIT)
+\href{https://orcid.org/0000-0002-1134-6758}{Boris Steipe} (aut)
 }
