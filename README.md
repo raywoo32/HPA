@@ -188,7 +188,7 @@ Open the following `rpt` files in your script-editor, and edit/save them to cust
 
 Modify the `DESCRIPTION` file as follows:
 
-Replace `rpt` with your package name, change the version to 0.1.0 (a first development version number), change the date to today's date, remove the `cre` role from my `Authors@R` field, and change `aut` to `ctb`, add an author field for yourself, and write a description for your package.
+Replace `rpt` with your package name, change the version to 0.1.0 (a first development [version number](https://semver.org/)), change the date to today's date, remove the `cre` role from my `Authors@R` field, and change `aut` to `ctb`, add an author field for yourself, and write a description for your package.
 
 ```diff
 -      Package: rpt
@@ -196,9 +196,9 @@ Replace `rpt` with your package name, change the version to 0.1.0 (a first devel
 Type: Package
 -      Title: R Package Template
 +      Title: <a title for your package>
--      Version: 1.1.0
+-      Version: 1.2.2
 +      Version: 0.1.0
--      Date: 2018-12-26
+-      Date: 2018-12-31
 +      Date: <today-in-YYYY-MM-DD-format>
 Authors@R: c(
 -    person("Boris", "Steipe", email = "boris.steipe@utoronto.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0002-1134-6758"))
