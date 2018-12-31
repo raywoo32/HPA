@@ -1,6 +1,9 @@
 # `rpt`
 
 #### (**R** **P**ackage **T**emplate)
+[![DOI](https://zenodo.org/badge/149768973.svg)](https://zenodo.org/badge/latestdoi/149768973)
+
+&nbsp;
 
 ###### [Boris Steipe](https://orcid.org/0000-0002-1134-6758), Department of Biochemistry and Department of Molecular Genetics, University of Toronto, Canada. &lt;boris.steipe@utoronto.ca&gt;
 
