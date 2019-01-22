@@ -23,7 +23,7 @@ test_that("corrupt input generates errors",  {
   expect_error(lseq(10,0), "'to' must be a finite number")
 })
 
-test_that("a sample input prouces the expected output",  {
+test_that("a sample input produces the expected output",  {
   expect_equal(lseq(1,10, length.out = 5), tmp)
 })
 
