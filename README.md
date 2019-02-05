@@ -53,42 +53,34 @@ The package serves dual duty, as an RStudio project, as well as an R package tha
 
 ## 2 STRING Data
 
-STRING is a database of functional interactions. STRING interactions are inferred from a variety of different experimental and computational categories, scored with a confidence score and made available as network edges where the nodes are ENSEMBL protein IDs. All STRING data is available under a CC-BY 4.0 license.
+The Human Protein Atlas (HPA) is a database that maps human proteins in cells, tissues and organs. HPA consists of 3 main components, the Tissue Atlas, the Cell Atlas and the Pathology Atlas. This package focuses on the normal tissue data from the Tissue Atlas which shows the distibution of genes across major tissues and organs in normal tissues. All data in HPA is open acess. 
 
-This document describes work with [STRING version 11 (preview) (2019-01-11)](https://string-db.org/cgi/access.pl?footer_active_subpage=archive) [(Szclarczyk _et al._ 2019)](https://academic.oup.com/nar/article/47/D1/D607/5198476).
-
-
+This document describes work with [The Human Protein Atlas version 18.1](https://www.proteinatlas.org/) [(Uhlén M _et al._ 2015)](10.1126/science.1260419) 	
+ 
 &nbsp;
 
 #### 2.1 Data semantics
 
-Association evidence in STRING is compiled in seven "channels" (Szclarczyk _et al._ 2019):
+As stated above, the Tissue Atlas of HPA shows the localization of human proteins across numerous types of tissues and organs. The Tissue Altas annotated each gene with one of 44 different normal tissue types and organs and 76 different cell types. This gives a broad picture of localized protein expression. 
 
-1. **Genomic context I**: neighbourhood
-2. **Genomic context II**: fusion
-3. **Genomic context III**: phylogenetic profiles
-4. **Co-expression**: correlations across a large number of mRNA and proteome data sets
-5. **Text-mining**: statistical co-citation analysis across PubMed and OMIM.
-6. **Experiments**: these are the _classical_ protein-protein interactions. These scores are derived from data imported from all [IMEX consortium databases](https://www.imexconsortium.org/)
-7. **Curated pathway- and protein-complex databases**: pathways from KEGG, Reactome, BioCyc and the GO consortium. All associations derived from this channel are scored with _p_ = 0.9.
+HPA obtains its data through manually analyzed RNA-seq expriments. For each gene, HPA uses experimental immunohistochemical staining profiles which are then computationally matched with mRNA data and gene/protein characterization data.
 
-For each "channel", STRING distinguishes evidence that is provided from the organism itself, and annotation transfer by homology.
+The data in HPA we will be using is the normal tissue dataset. This results in the tab-separated file we will be analyzing. This file includes: 
 
-Finally, a composite score is computed as the sum of the probabilities from each channel, subtracting a "prior" (that indicates the probability of a false positive) and applying a homology correction to co-occurrence and text-mining scores. Source code for this operation is available [here (python)](http://string-gamma.org/download/combine_subscores.py).
-
-In summary: STRING interactions represent the probability of "information flow" between two nodes, since: "biologically meaningful interfaces have evolved to allow the flow of information through the cell, and they are ultimately essential for implementing a functional system."(Szclarczyk _et al._ 2019)
-
-This approach integrates biological data on the largest possible scale, and this is successful: a recent benchmark study (Huang _et al._ 2018) has shown STRING to have the highest network recovery scores of disease-associated gene sets from the DisGeNET database, when compared with 20 other gene network resources. 
+1. **Ensembl gene identifier: 
+2. **Tissue name: 
+3. **Annotated cell type: 
+4. **Expression value 
+5. **Gene reliability 
 
 &nbsp;
 
 ## 3 Data download and cleanup
 
-To download the source data from STRING ... :
+To download the source data from HPA ... :
 
-1. Navigate to the [**STRING** database](https://string-db.org) and follow the link to the [download section](https://string-db.org/cgi/download.pl).
-2. Choose "Homo sapiens" as organism.
-3. Download the following data file: (Warning: large).
+1. Navigate to the [**Human Protein Atlas** database]https://www.proteinatlas.org/) and follow the link to the [download section](https://www.proteinatlas.org/download).
+2. Download "normal_tissue.tsv.zip": (Warning: large).
 
 * `9606.protein.links.v11.0.txt.gz` (71.2 Mb)	protein network data (scored links between proteins);
 
