@@ -33,7 +33,7 @@ The package serves dual duty, as an RStudio project, as well as an R package tha
       |__toBrowser.R               # display .md files in your browser
    |__inst/
       |__extdata/
-         |__ensp2sym.RData         # ENSP ID to HGNC symbol mapping tool
+         |__EntrezMap.RData         # ENSP ID to HGNC symbol mapping tool
          |__xSetEdges.tsv          # annotated example edges
       |__img/
          |__[...]                  # image sources for .md document
@@ -302,7 +302,7 @@ once in `ensg2entrez$ENSG`, with different mapped symbols.
 
 ```R
   sum(is.na(ensg2entrez$entrez))  # 42
-  sum(ensg2entrez$entrez == "")   # 0
+  sum((ensg2entrez$entrez == "")   # 0
 ```
 
 &nbsp;
@@ -330,6 +330,11 @@ Let's fix the "duplicates" problem first. We can't have duplicates: if we encoun
 
   # Arbitrarily choose the first of each, since the ENSGs already map directly to HGNC
    ensg2entrez <- ensg2entrez[!duplicated(ensg2entrez$ENSG),]
+   ensg2entrez <- ensg2entrez[!ensg2entrez$ENSG == "", ]
+   
+  # Check no nulls in ENSG
+  sum(is.na(ensg2entrez$ENSG))   # 0
+
 
   # check result
   any(duplicated(ensg2entrez$ENSG))   # now FALSE
@@ -368,11 +373,11 @@ After this preliminary cleanup, defining the mapping tool is simple:
 
 &nbsp;
 
-###### 4.2.2  Cleanup and validation of `ensp2sym`
+###### 4.2.2  Cleanup and validation of `EntrezMap`
 
 There are two types of IDs we need to process further: (1), those that were not returned at all from biomaRt, (2) those for which only an empty string was returned.
 
-First, we add the symbols that were not returned by biomaRt to the map. They are present in uniqueENSG, but not in ensp2sym$ensp:
+First, we add the symbols that were not returned by biomaRt to the map. They are present in uniqueENSG, but not in EntrezMap$ensp:
 
 &nbsp;
 
@@ -393,17 +398,34 @@ First, we add the symbols that were not returned by biomaRt to the map. They are
 
 &nbsp;
 
+Next, we set the symbols for which only an empty string was returned to `NA`:
+
+&nbsp;
+
+```R
+  sel <- which(mappingEnsg2Entrez == "") # 199 elements
+  mappingEnsg2Entrez[head(sel)] # before ...
+  mappingEnsg2Entrez[sel] <- NA
+  mappingEnsg2Entrez[head(sel)] # ... after
+
+  # Do we still have all ENSP IDs accounted for?
+  all( uniqueENSG %in% names(mappingEnsg2Entrez))  # TRUE
+
+```
+
+&nbsp;
+
 
 ###### 4.2.3  Additional symbols
 
-A function for using biomaRt for more detailed mapping is in the file `inst/scripts/recoverIds.R`. We have loaded it previously, and use it on all elements of `ensp2sym` that are `NA`.
+A function for using biomaRt for more detailed mapping is in the file `inst/scripts/recoverIds.R`. We have loaded it previously, and use it on all elements of `EntrezMap` that are `NA`.
 
 &nbsp;
 
 ```R
 
-  # How many NAs are there in "ensp2sym" column?
-  sum(is.na(mappingEnsg2Entrez))   # 49
+  # How many NAs are there in "EntrezMap" column?
+  sum(is.na(mappingEnsg2Entrez))   # 42
 
   # subset the ENSP IDs
   unmappedENSG <- names(mappingEnsg2Entrez)[is.na(mappingEnsg2Entrez)]
@@ -413,13 +435,16 @@ A function for using biomaRt for more detailed mapping is in the file `inst/scri
   recoveredENSG <- recoverIDs(unmappedENSG)
 
   # how many did we find
-  nrow(recoveredENSG)  # 0
+  nrow(recoveredENSG)  #7
 
-  # add the recovered symbols to ensp2sym
-  ensp2sym[recoveredENSP$ensp] <- recoveredENSP$sym
+  EntrezMap <- (mappingEnsg2Entrez)
+
+  # add the recovered symbols to EntrezMap 
+  
+  EntrezMap[recoveredENSG$ensg] <- recoveredENSG$entrez
 
   # validate:
-  sum(is.na(ensp2sym))  # 436 - 11 less than 447
+  sum(is.na(mappingEnsg2Entrez))  
 
 ```
 
@@ -427,59 +452,10 @@ A function for using biomaRt for more detailed mapping is in the file `inst/scri
 
 #### 4.4  Step four: outdated symbols
 
-We now have each unique ENSP IDs represented once in our mapping table. But are these the correct symbols? Or did biomaRt return obsolete names for some? We need to compare the symbols to our reference data and try to fix any problems. Symbols that do not appear in the reference table will also be set to NA.
+I cannot do this step because I mapped to entrez values and this data is not available in HGNC.
 
 &nbsp;
 
-```R
-  # are all symbols present in the reference table?
-  sel <- ( ! (ensp2sym %in% HGNC$sym)) & ( ! (is.na(ensp2sym)))
-  length(        ensp2sym[ sel ] )  # 137 unknown
-  length( unique(ensp2sym[ sel ]))  # they are all unique
-
-  # put these symbols in a new dataframe
-  unkSym <- data.frame(unk = ensp2sym[ sel ],
-                       new = NA,
-                       stringsAsFactors = FALSE)
-
-  # Inspect:
-  # several of these are formatted like "TNFSF12-TNFSF13" or "TMED7-TICAM2".
-  # This looks like biomaRt concatenated symbol names.
-  grep("TNFSF12", HGNC$sym) # 23984: TNFSF12
-  grep("TNFSF13", HGNC$sym) # 23985 23986: TNFSF13 and TNFSF13B
-  grep("TMED7",   HGNC$sym) # 23630: TMED7
-  grep("TICAM2",  HGNC$sym) # 23494: TICAM2
-
-  # It's not clear why this happened. We will take a conservative approach
-  # and not make assumptions which of the two symbols is the correct one,
-  # i.e. we will leave these symbols as NA
-
-
-  # grep() for the presence of the symbols in either HGNC$prev or
-  # HGNC$synonym. If either is found, that symbol replaces NA in unkSym$new
-  for (i in seq_len(nrow(unkSym))) {
-    iPrev <- grep(unkSym$unk[i], HGNC$prev)[1] # take No. 1 if there are several
-    if (length(iPrev) == 1) {
-      unkSym$new[i] <- HGNC$sym[iPrev]
-    } else {
-      iSynonym <- which(grep(unkSym$unk[i], HGNC$synonym))[1]
-      if (length(iSynonym) == 1) {
-        unkSym$new[i] <- HGNC$sym[iSynonym]
-      }
-    }
-  }
-
-  # How many did we find?
-  sum(! is.na(unkSym$new))  # 32
-
-  # We add the contents of unkSym$new back into ensp2sym. This way, the
-  # newly mapped symbols are updated, and the old symbols that did not
-  # map are set to NA.
-
-  ensp2sym[rownames(unkSym)] <- unkSym$new
-
-
-```
 
 #### 4.5 Final validation
 
@@ -487,26 +463,20 @@ Validation and statistics of our mapping tool:
 
 ```R
 
-# do we now have all ENSP IDs mapped?
-all(uniqueENSG %in% names(ensp2sym))  # TRUE
-
 # how many symbols did we find?
-sum(! is.na(ensp2sym))  # 18845
+sum(! is.na(EntrezMap))  # 13265
 
 # (in %)
-sum(! is.na(ensp2sym)) * 100 / length(ensp2sym)  # 96.0 %
-
-# are all symbols current in our reference table?
-all(ensp2sym[! is.na(ensp2sym)] %in% HGNC$sym)  # TRUE
+sum(! is.na(EntrezMap)) * 100 / length(EntrezMap)  # 99.73684 %
 
 # Done.
 # This concludes construction of our mapping tool.
 # Save the map:
 
-save(ensp2sym, file = file.path("inst", "extdata", "ensp2sym.RData"))
+save(EntrezMap, file = file.path("inst", "extdata", "EntrezMap.RData"))
 
 # From an RStudio project, the file can be loaded with
-load(file = file.path("inst", "extdata", "ensp2sym.RData"))
+load(file = file.path("inst", "extdata", "EntrezMap.RData"))
 
 
 ```
@@ -515,8 +485,7 @@ load(file = file.path("inst", "extdata", "ensp2sym.RData"))
 
 # 5 Annotating gene sets with STRING Data
 
-Given our mapping tool, we can now annotate gene sets with STRING data. As a first example, we analyze the entire STRING graph. Next, we use high-confidence edges to analyze the network of our example gene set.
-
+Given our mapping tool, we can now annotate gene sets with HPA data. 
 
 &nbsp;
 
@@ -525,7 +494,7 @@ Given our mapping tool, we can now annotate gene sets with STRING data. As a fir
 # Read the interaction graph data: this is a weighted graph defined as an
 # edge list with gene a, gene b, confidence score (0, 999).
 
-ensg2entrez <- readr::read_delim(file.path("../data", "9606.protein.links.v11.0.txt"),
+ensg2entrez <- readr::read_delim(file.path(../data", "normal_tissue.tsv""),
                          delim = " ",
                          skip = 1,
                          col_names = c("a", "b", "score"))  # 11,759,454 rows
@@ -622,8 +591,8 @@ Finally we map the ENSP IDs to HGNC symbols. Using our tool, this is a simple as
 
 ```R
 
-ensg2entrez$a <- ensp2sym[ensg2entrez$a]
-ensg2entrez$b <- ensp2sym[ensg2entrez$b]
+ensg2entrez$a <- EntrezMap[ensg2entrez$a]
+ensg2entrez$b <- EntrezMap[ensg2entrez$b]
 
 # Validate:
 # how many rows could not be mapped
