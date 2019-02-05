@@ -4,7 +4,7 @@
 # Version: 0.1
 # Date:    2018-01-22
 # Author:  Rachel Woo <rachelsam.woo@mail.utoronto.ca>
-#          ORCID: 0000-0002-1134-6758
+#          ORCID: 0000-0002-1387-487X
 # License: see file LICENSE
 #
 # Notes: Very heavily uses code from
@@ -65,6 +65,39 @@ if (FALSE) {
 if (FALSE) {
   # Enter your function tests here...
   
+  #  	Normal tissue data
+  # Human Protein Atlas contains information regarding the human proteome
+  # Its goal is to map all the human proteins in cells, tissues and organs
+  # with experimental data. This project focuses on the normal tissue data
+  # which shows the expression profiles for proteins in human tissues based
+  # on immunohistochemisty using tissue micro arrays. .
+  #
+  # https://www.proteinatlas.org/about/download
+  #
+  #   ../data/normal_tissue.tsvt (70 674) KB  - contains normal tissue data
+  #
+  #
+  
+  # My file already came with both ENSG and HGNC
+  # Read in data
+  tmp <- readr::read_tsv(file.path("../data", "normal_tissue.tsv"),
+                         skip = 1, #skip gets rid of header
+                         col_names = c("ENSG", "HGNC", "Tissue", "Cell Type",
+                                       "Level", "Reliability"))  # 1 053 330 rows
+  
+  # I still map the ENSG to HGNC for the exercise and check if same
+  # I have many repeat IDs only take the unique
+  uniqueENSG <- unique(tmp$ENSG)  # 13,206 elements
+  
+  myMart <- biomaRt::useMart("ensembl", dataset="hsapiens_gene_ensembl")
+  
+  ensg2hgnc <- biomaRt::getBM(filters = "ensembl_gene_id",
+                              attributes = c("ensembl_gene_id",
+                                             "hgnc_symbol"),
+                              values = uniqueENSG,
+                              mart = myMart)
+  
+  colnames(ensg2hgnc) <- c("ENSG", "HGNC")
 }
 
 
