@@ -216,24 +216,25 @@ Note:
 
 Therefore: a good ID mapping tool contains as many mappings as possible for the target set, and every ID of the source set should be present and unique. Incidentally, uniqueness is structurally enforced: in R, names, rownames and colnames have to be unique in the first place.
 
-Since the Dataset already comes with HGNC, I found the protein IDs and entrezgene IDs for this dataset.
+Since the Dataset already comes with HGNC, I found the entrezgene IDs for this dataset.
 
 &nbsp;
 
 ```R
 
-  # Map ENSP to HGNC symbols: open a "Mart" object ..
+  # Map ENSP to entrez symbols: open a "Mart" object ..
   myMart <- biomaRt::useMart("ensembl", dataset="hsapiens_gene_ensembl")
 
-  ensg2ensp <- biomaRt::getBM(filters = "ensembl_gene_id",
+  ensg2entrez <- biomaRt::getBM(filters = "ensembl_gene_id",
                              attributes = c("ensembl_gene_id",
-                                            "ensembl_peptide_id"),
+                                            "entrezgene"),
                              values = uniqueENSG,
                              mart = myMart)
 
-  colnames(ensg&enspc) <- c("ENSG", "ENSP")
-
-  head(tmp)
+  colnames(ensg2entrez) <- c("ENSG", "entrez")
+  
+  #Show initial dataset
+  head(ensg2entrez)
   #    ENSG            HGNC   Tissue        `Cell Type`         Level        Reliability
   #   <chr>           <chr>  <chr>         <chr>               <chr>        <chr>      
   #1  ENSG00000000003 TSPAN6 adrenal gland glandular cells     Not detected Approved   
@@ -243,14 +244,29 @@ Since the Dataset already comes with HGNC, I found the protein IDs and entrezgen
   #5  ENSG00000000003 TSPAN6 breast        adipocytes          Not detected Approved   
   #6  ENSG00000000003 TSPAN6 breast        glandular cells     High         Approved   
 
-  # check values
-  any(is.na(ensg2ensp$ENSG)) # FALSE
-  any(is.na(ensg2ensp$ENSP)) # FALSE
-  nrow(ensg2ensp)            # 8 4684
-  length(unique(ensg2ensp$ENSG))  # 13 199
-  length(unique(ensg2ensp$ENSP))   # 13 199
+  #Show generated dataset 
+  head(ensg2entrez)
+  #  ensembl_gene_id    entrezgene
+  #1 ENSG00000000003       7105
+  #2 ENSG00000000419       8813
+  #3 ENSG00000000457      57147
+  #4 ENSG00000000460      55732
+  #5 ENSG00000000938       2268
+  #6 ENSG00000000971       3075
 
-  nrow(tmp)  # 19,109  symbols have been retrieved for the 19,354 ENSP IDs.
+  # check values
+  any(is.na(ensg2entrez$ENSG)) # FALSE
+  any(is.na(ensg2entrez$entrez)) # TRUE
+  head(sort(ensg2entrez$entrez))
+  
+  # Did it map perfectly? - no
+  nrow(ensg2entrez)                    # 13300
+  length(unique(ensg2entrez$ENSG))     # 13199
+  length(unique(ensg2entrez$entrez))   # 13236
+
+  length(uniqueENSG)  # 13300  symbols have been retrieved for the 13206 ensg IDs.
+  
+  
   
 ```
 &nbsp;
@@ -260,28 +276,26 @@ There are three possible problems with the data that biomart returns:
 &nbsp;
 
 **(1)** There might be more than one value returned. The ID appears more than
-once in `tmp$ensembl_peptide_id`, with different mapped symbols.
+once in `ensg2entrez$ENSG`, with different mapped symbols.
 
 ```R
-  sum(duplicated(tmp$ENSG))  # Indeed: three duplicates!
-  sum(duplicated(ensg2HGNC$ENSG))
+  sum(duplicated(ensg2entrez$ENSG)) #101 duplicates
 ```
 
 &nbsp;
 
-**(2)** There might be nothing returned for one ENSP ID. We have the ID in `uENSP`, but it does not appear in `tmp$ensembl_peptide_id`:
+**(2)** There might be nothing returned for one ENSG ID. We have the ID in `uniqueENSG`, but it does not appear in `ensg2entrez$ENSG`:
 
 ```R
-
-  sum(! (uENSP) %in% tmp$ensembl_peptide_id)  # 248
+  sum(! (uniqueENSG) %in% ensg2entrez$ENSG)  # 7
 ```
 &nbsp;
 
-**(3)** There might be no value returned: `NA`, or `""`. The ID appears in `tmp$ensembl_peptide_id`, but there is no symbol in `tmp$hgnc_symbol`.
+**(3)** There might be no value returned: `NA`, or `""`. The ID appears in `ensg2entrez$ENSG`, but there is no symbol in `ensg2entrez$entrez`.
 
 ```R
-  sum(is.na(ensp2sym$sym))  # 0
-  sum(ensp2sym$sym == "")   # 199 - note: empty strings for absent symbols.
+  sum(is.na(ensg2entrez$entrez))  # 42
+  sum(ensg2entrez$entrez == "")   # 0
 ```
 
 &nbsp;
@@ -292,29 +306,26 @@ Let's fix the "duplicates" problem first. We can't have duplicates: if we encoun
 
 ```R
 
-  dupEnsp <- tmp$ensembl_peptide_id[duplicated(tmp$ensembl_peptide_id)]
-  tmp[tmp$ensembl_peptide_id %in% dupEnsp, ]
+  dupEnsg <- ensg2entrez$ENSG[duplicated(ensg2entrez$ENSG)]
+  dupTable <- ensg2entrez[ensg2entrez$ENSG %in% dupEnsg, ]
 
-  #                  ensp      sym
-  # 8668  ENSP00000344961  PLEKHG7
-  # 8669  ENSP00000344961 C12orf74
-  # 14086 ENSP00000380933  PLEKHG7
-  # 14087 ENSP00000380933 C12orf74
-  # 18419 ENSP00000480558   CCL3L3
-  # 18420 ENSP00000480558   CCL3L1
+  # abbreviated table, it is very long
+  #         ENSG            entrez
+  #55    ENSG00000004866     93655
+  #56    ENSG00000004866      7982
+  #250   ENSG00000011454     23637
+  #251   ENSG00000011454      2844
+  #361   ENSG00000023171 100128242
+  #362   ENSG00000023171     57476
+  #721   ENSG00000063587 105373378
+  #722   ENSG00000063587     10838
 
-  # ENSP00000380933 and ENSP00000344961 should both map to PLEKHG7
-  # CCL3L3 and CCL3L3 both have UniProt ID P16619, we map ENSP00000480558
-  # (arbitrarily) to CCL3L1
 
-  # validate target rows
-  tmp[tmp$hgnc_symbol %in% c("C12orf74", "CCL3L3"), ]
-
-  # remove target rows
-  tmp <- tmp[ ! (tmp$hgnc_symbol %in% c("C12orf74", "CCL3L3")), ]
+  # Arbitrarily choose the first of each, since the ENSGs already map directly to HGNC
+   ensg2entrez <- ensg2entrez[!duplicated(ensg2entrez$ENSG),]
 
   # check result
-  any(duplicated(tmp$ensembl_peptide_id))   # now FALSE
+  any(duplicated(ensg2entrez$ENSG))   # now FALSE
 ```
 
 &nbsp;
@@ -324,8 +335,8 @@ After this preliminary cleanup, defining the mapping tool is simple:
 &nbsp;
 
 ```R
-  ensp2sym <- tmp$hgnc_symbol
-  names(ensp2sym) <- tmp$ensembl_peptide_id
+  ensp2sym <- ensg2entrez$hgnc_symbol
+  names(ensp2sym) <- ensg2entrez$ensembl_peptide_id
   
   head(ensp2sym)
   # ENSP00000216487 ENSP00000075120 ENSP00000209884  
@@ -342,14 +353,14 @@ After this preliminary cleanup, defining the mapping tool is simple:
 
 There are two types of IDs we need to process further: (1), those that were not returned at all from biomaRt, (2) those for which only an empty string was returned.
 
-First, we add the symbols that were not returned by biomaRt to the map. They are present in uENSP, but not in ensp2sym$ensp:
+First, we add the symbols that were not returned by biomaRt to the map. They are present in uniqueENSG, but not in ensp2sym$ensp:
 
 &nbsp;
 
 ```R
-  sel <- ! (uENSP %in% names(ensp2sym))
+  sel <- ! (uniqueENSG %in% names(ensp2sym))
   x <- rep(NA, sum( sel))
-  names(x) <- uENSP[ sel ]
+  names(x) <- uniqueENSG[ sel ]
 
   # confirm uniqueness
   any(duplicated(c(names(x), names(ensp2sym))))  # FALSE
@@ -358,7 +369,7 @@ First, we add the symbols that were not returned by biomaRt to the map. They are
   ensp2sym <- c(ensp2sym, x)
 
   # confirm
-  all(uENSP %in% names(ensp2sym))  # TRUE
+  all(uniqueENSG %in% names(ensp2sym))  # TRUE
 ```
 
 &nbsp;
@@ -374,7 +385,7 @@ Next, we set the symbols for which only an empty string was returned to `NA`:
   ensp2sym[head(sel)] # ... after
 
   # Do we still have all ENSP IDs accounted for?
-  all( uENSP %in% names(ensp2sym))  # TRUE
+  all( uniqueENSG %in% names(ensp2sym))  # TRUE
 
 ```
 
@@ -474,7 +485,7 @@ Validation and statistics of our mapping tool:
 ```R
 
 # do we now have all ENSP IDs mapped?
-all(uENSP %in% names(ensp2sym))  # TRUE
+all(uniqueENSG %in% names(ensp2sym))  # TRUE
 
 # how many symbols did we find?
 sum(! is.na(ensp2sym))  # 18845
@@ -511,24 +522,24 @@ Given our mapping tool, we can now annotate gene sets with STRING data. As a fir
 # Read the interaction graph data: this is a weighted graph defined as an
 # edge list with gene a, gene b, confidence score (0, 999).
 
-tmp <- readr::read_delim(file.path("../data", "9606.protein.links.v11.0.txt"),
+ensg2entrez <- readr::read_delim(file.path("../data", "9606.protein.links.v11.0.txt"),
                          delim = " ",
                          skip = 1,
                          col_names = c("a", "b", "score"))  # 11,759,454 rows
 
 # do they all have the right tax id?
-all(grepl("^9606\\.", tmp$a))  # TRUE
-all(grepl("^9606\\.", tmp$b))  # TRUE
+all(grepl("^9606\\.", ensg2entrez$a))  # TRUE
+all(grepl("^9606\\.", ensg2entrez$b))  # TRUE
 # remove "9606." prefix
-tmp$a <- gsub("^9606\\.", "", tmp$a)
-tmp$b <- gsub("^9606\\.", "", tmp$b)
+ensg2entrez$a <- gsub("^9606\\.", "", ensg2entrez$a)
+ensg2entrez$b <- gsub("^9606\\.", "", ensg2entrez$b)
 
 # how are the scores distributed?
 
 minScore <- 0
 maxScore <- 1000
 # we define breaks to lie just below the next full number
-hist(tmp$score[(tmp$score >= minScore) & (tmp$score <= maxScore)],
+hist(ensg2entrez$score[(ensg2entrez$score >= minScore) & (ensg2entrez$score <= maxScore)],
      xlim = c(minScore, maxScore),
      breaks = c((seq(minScore, (maxScore - 25), by = 25) - 0.1), maxScore),
      main = "STRING edge scores",
@@ -550,7 +561,7 @@ We know that "channel 7 - databases" interactions are arbitrarily scored as _p_ 
 
 minScore <- 860
 maxScore <- 1000
-hist(tmp$score[(tmp$score >= minScore) & (tmp$score <= maxScore)],
+hist(ensg2entrez$score[(ensg2entrez$score >= minScore) & (ensg2entrez$score <= maxScore)],
      xlim = c(minScore, maxScore),
      breaks = c((seq(minScore, (maxScore - 4), by = 4) - 0.1), maxScore),
      main = "STRING edge scores",
@@ -569,14 +580,14 @@ abline(v = 900, lwd = 0.5)
 ```R
 
 # Focus on the cutoff of scores at p == 0.9
-sum(tmp$score >= 880 & tmp$score < 890) # 5,706
-sum(tmp$score >= 890 & tmp$score < 900) # 5,666
-sum(tmp$score >= 900 & tmp$score < 910) # 315,010
-sum(tmp$score >= 910 & tmp$score < 920) # 83,756
+sum(ensg2entrez$score >= 880 & ensg2entrez$score < 890) # 5,706
+sum(ensg2entrez$score >= 890 & ensg2entrez$score < 900) # 5,666
+sum(ensg2entrez$score >= 900 & ensg2entrez$score < 910) # 315,010
+sum(ensg2entrez$score >= 910 & ensg2entrez$score < 920) # 83,756
 
 # We shall restrict our dataset to high-confidence edges with p >= 0.9
 
-tmp <- tmp[tmp$score >= 900, ]  # 648,304 rows of high-confidence edges
+ensg2entrez <- ensg2entrez[ensg2entrez$score >= 900, ]  # 648,304 rows of high-confidence edges
 
 ```
 
@@ -591,13 +602,13 @@ Are these edges duplicated? I.e. are there (a, b) and (b, a) edges in the datase
 sPaste <- function(x, collapse = ":") {
   return(paste(sort(x), collapse = collapse))
 }
-tmp$key <- apply(tmp[ , c("a", "b")], 1, sPaste)
+ensg2entrez$key <- apply(ensg2entrez[ , c("a", "b")], 1, sPaste)
 
-length(tmp$key) # 648,304
-length(unique(tmp$key)) # 324,152  ... one half of the edges are duplicates!
+length(ensg2entrez$key) # 648,304
+length(unique(ensg2entrez$key)) # 324,152  ... one half of the edges are duplicates!
 
 # We can remove those edges. And the keys.
-tmp <- tmp[( ! duplicated(tmp$key)), c("a", "b", "score") ]
+ensg2entrez <- ensg2entrez[( ! duplicated(ensg2entrez$key)), c("a", "b", "score") ]
 ```
 
 &nbsp;
@@ -608,19 +619,19 @@ Finally we map the ENSP IDs to HGNC symbols. Using our tool, this is a simple as
 
 ```R
 
-tmp$a <- ensp2sym[tmp$a]
-tmp$b <- ensp2sym[tmp$b]
+ensg2entrez$a <- ensp2sym[ensg2entrez$a]
+ensg2entrez$b <- ensp2sym[ensg2entrez$b]
 
 # Validate:
 # how many rows could not be mapped
-any(grepl("ENSP", tmp$a))  # Nope
-any(grepl("ENSP", tmp$b))  # None left here either
-sum(is.na(tmp$a)) # 705
-sum(is.na(tmp$b)) # 3501
+any(grepl("ENSP", ensg2entrez$a))  # Nope
+any(grepl("ENSP", ensg2entrez$b))  # None left here either
+sum(is.na(ensg2entrez$a)) # 705
+sum(is.na(ensg2entrez$b)) # 3501
 
 # we remove edges in which either one or the other node is NA to
 # create our final data:
-STRINGedges <- tmp[( ! is.na(tmp$a)) & ( ! is.na(tmp$b)), ] # 319,997 edges
+STRINGedges <- ensg2entrez[( ! is.na(ensg2entrez$a)) & ( ! is.na(ensg2entrez$b)), ] # 319,997 edges
 
 # Done.
 # Save result
