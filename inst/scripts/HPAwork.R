@@ -14,6 +14,8 @@
 # https://useast.ensembl.org/info/data/biomart/biomart_r_package.html
 # https://www.genenames.org/download/custom/
 # http://seqanswers.com/forums/archive/index.php/t-8934.html
+# https://stats.stackexchange.com/questions/11193/how-do-i-remove-all-but-one-specific-duplicate-record-in-an-r-data-frame
+
 
 # ==============================================================================
 
@@ -63,7 +65,7 @@ if (FALSE) {
 
 # ====  TESTS  =================================================================
 if (FALSE) {
-  # Enter your function tests here...
+  # TODO: FUNCTION TESTS
   
   #  	Normal tissue data
   # Human Protein Atlas contains information regarding the human proteome

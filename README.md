@@ -4,7 +4,7 @@
 
 &nbsp;
 
-###### [Rachel Woo](https://orcid.org/ORCID: 0000-0002-1387-487X),rachelsam.woo@mail.utoronto.ca
+###### [Rachel Woo](https://orcid.org/ORCID: 0000-0002-1387-487X). &lt;rachelsam.woo@mail.utoronto.ca&gt;
 
 ----
 
@@ -335,16 +335,28 @@ After this preliminary cleanup, defining the mapping tool is simple:
 &nbsp;
 
 ```R
-  ensp2sym <- ensg2entrez$hgnc_symbol
-  names(ensp2sym) <- ensg2entrez$ensembl_peptide_id
-  
-  head(ensp2sym)
-  # ENSP00000216487 ENSP00000075120 ENSP00000209884  
-  #        "RIN3"        "SLC2A3"        "KLHL20"   
-  #        
-  # ENSP00000046087 ENSP00000205214 ENSP00000167106
-  #      "ZPBP"         "AASDH"         "VASH1"
+  #Make entrez mapping tool
+  mappingEnsg2Entrez <- ensg2entrez$entrez
+  names(mappingEnsg2Entrez) <- ensg2entrez$ENSG
 
+  head(mappingEnsg2Entrez)
+  # ENSG00000000003 ENSG00000000419 ENSG00000000457 
+  #         7105            8813           57147        
+  # ENSG00000000460 ENSG00000000938 ENSG00000000971 
+  #         55732            2268            3075 
+
+  # Make HGNC mapping tool 
+  ensg2hgnc <-tmp[ c("ENSG", "HGNC")] #still has repeats
+  ensg2hgnc <- ensg2hgnc[!duplicated(ensg2hgnc$ENSG),]
+  mappingEnsg2Hgnc <- ensg2hgnc$HGNC
+  names(mappingEnsg2Hgnc) <- ensg2hgnc$ENSG
+
+  head(mappingEnsg2Hgnc)
+  # ENSG00000000003 ENSG00000000419 ENSG00000000457 
+  #     "TSPAN6"          "DPM1"         "SCYL3"      
+  #  ENSG00000000460 ENSG00000000938 ENSG00000000971
+  #  "C1orf112"           "FGR"           "CFH" 
+  
 ```
 
 &nbsp;
@@ -358,38 +370,22 @@ First, we add the symbols that were not returned by biomaRt to the map. They are
 &nbsp;
 
 ```R
-  sel <- ! (uniqueENSG %in% names(ensp2sym))
+  sel <- ! (uniqueENSG %in% names(mappingEnsg2Entrez))
   x <- rep(NA, sum( sel))
   names(x) <- uniqueENSG[ sel ]
 
   # confirm uniqueness
-  any(duplicated(c(names(x), names(ensp2sym))))  # FALSE
+  any(duplicated(c(names(x), names(mappingEnsg2Entrez))))  # FALSE
 
   # concatenate the two vectors
-  ensp2sym <- c(ensp2sym, x)
+  mappingEnsg2Entrez <- c(mappingEnsg2Entrez, x)
 
   # confirm
-  all(uniqueENSG %in% names(ensp2sym))  # TRUE
+  all(uniqueENSG %in% names(mappingEnsg2Entrez))  # TRUE
 ```
 
 &nbsp;
 
-Next, we set the symbols for which only an empty string was returned to `NA`:
-
-&nbsp;
-
-```R
-  sel <- which(ensp2sym == "") # 199 elements
-  ensp2sym[head(sel)] # before ...
-  ensp2sym[sel] <- NA
-  ensp2sym[head(sel)] # ... after
-
-  # Do we still have all ENSP IDs accounted for?
-  all( uniqueENSG %in% names(ensp2sym))  # TRUE
-
-```
-
-&nbsp;
 
 ###### 4.2.3  Additional symbols
 
@@ -400,13 +396,13 @@ A function for using biomaRt for more detailed mapping is in the file `inst/scri
 ```R
 
   # How many NAs are there in "ensp2sym" column?
-  sum(is.na(ensp2sym))   # 447
+  sum(is.na(mappingEnsg2Entrez))   # 49
 
   # subset the ENSP IDs
-  unmappedENSP <- names(ensp2sym)[is.na(ensp2sym)]
+  unmappedENSG <- names(mappingEnsg2Entrez)[is.na(mappingEnsg2Entrez)]
 
   # use our function recoverIDs() to try and map the unmapped ensp IDs
-  # to symboils via other cross-references
+  # to symbois via other cross-references
   recoveredENSP <- recoverIDs(unmappedENSP)
 
   # how many did we find
