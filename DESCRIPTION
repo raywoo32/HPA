@@ -9,13 +9,14 @@ Authors@R: c(
     )
 Description: Describes the workflow for annotating human genes with
              Human Protein Atlas Data and contains an annotated example
-             data set of genes in normal tissues and an ensemble gene ID 
-             to HGNC symbol ID mapping tool.
+             data set of genes in normal tissues, an ensemble gene ID 
+             to HGNC symbol ID mapping tool and a ensemble gene ID to 
+             entrez ID mapping tool. 
 License: file LICENSE
 Encoding: UTF-8
 LazyData: true
 Suggests: readr,
           BiocManager,
           biomaRt,
-          igraph
+          ggplot2
 RoxygenNote: 6.1.1

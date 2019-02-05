@@ -1,3 +1,6 @@
+# Taken From Boris Steipe STRING package
+# (https://github.com/hyginn/BCB420.2019.STRING) (Steipe, 2018). 
+
 # rptTwee.R
 
 #' rptTwee
@@ -44,41 +47,41 @@ rptTwee <- function(path = getwd(),
                              "^\\.git/",
                              "^\\.Rproj.user",
                              "\\.DS_Store")) {
-
+  
   fad <-  list.files(path = path,
                      recursive = TRUE,
                      no.. = TRUE,
                      all.files = showHidden,
                      include.dirs = TRUE)
-
+  
   # remove files and directories listed in excl
   sel <- grepl(paste("(", excl, ")", sep = "", collapse = "|"), fad)
   fad <- fad[! sel]
-
+  
   # remove entries that are too deep
   sel <- unlist(lapply(regmatches(fad, gregexpr("/", fad)), length))  >= lev
   fad <- fad[! sel]
-
+  
   if (showRd) {
     # prepend root directory
     Rd <- gsub("^.*/(.+)$", "\\1", path)
     fad <- paste(Rd, fad, sep = "/")
     fad <- c(Rd, fad)
   }
-
+  
   # prepare to add a backslash to directories
   dirMarks <- ifelse(dir.exists(paste0("../", fad)), "/", "")
-
+  
   # add dirMarks to force correct order for directories and containing files,
   # then reorder fad and dirMarks
   fad <- paste0(fad, dirMarks)
   oFad <- order(fad)
   fad <- fad[oFad]
   dirMarks <- dirMarks[oFad]
-
+  
   # split fad and replace levels with lines
   fad <- strsplit(fad, "/")
-
+  
   makeLines <- function(x) {
     l <- length(x)
     if (l == 1) {
@@ -88,12 +91,12 @@ rptTwee <- function(path = getwd(),
     }
     return(paste0(x, collapse = ""))
   }
-
+  
   fad <- unlist(lapply(fad, makeLines))
   fad <- paste0(fad, dirMarks)  # add dirmarks back
-
+  
   cat(fad, sep = "\n")   # cat result
-
+  
 }
 
 # [END]
