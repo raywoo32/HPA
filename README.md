@@ -437,6 +437,7 @@ A function for using biomaRt for more detailed mapping is in the file `inst/scri
   nrow(recoveredENSG)  #7
 
   EntrezMap <- (mappingEnsg2Entrez)
+  HGNCMap <- (mappingEnsg2Hgnc)
 
   # add the recovered symbols to EntrezMap 
   
@@ -473,9 +474,12 @@ sum(! is.na(EntrezMap)) * 100 / length(EntrezMap)  # 99.73684 %
 # Save the map:
 
 save(EntrezMap, file = file.path("inst", "extdata", "EntrezMap.RData"))
+save(HGNCMap, file = file.path("inst", "extdata", "HGNCMap.RData"))
+
 
 # From an RStudio project, the file can be loaded with
 load(file = file.path("inst", "extdata", "EntrezMap.RData"))
+load(file = file.path("inst", "extdata", "HGNCMap.RData"))
 
 
 ```
@@ -591,7 +595,6 @@ cat(sprintf("\t%s\t(%s)\n", HGNC[xSet[x], "sym"], HGNC[xSet[x], "name"]))
 # For our annotation, we select edges for which both nodes are part of the
 # example set:
 sel <- (unique(hpaAnnotated$HGNC) %in% xSet) 
-sel <- (hpaAnnotated$HGNC %in% xSet) 
 xSetEdges <- hpaAnnotated[sel, c("HGNC")]
 # Statistics:
 nrow(xSetEdges)   # 206
@@ -618,90 +621,6 @@ nrow(myXset) # 206
 colnames(myXset) == c("a", "b") # TRUE TRUE
 
 ```
-
-&nbsp;
-
-#### 7.1 Biological validation: network properties
-
-Explore some network properties of the exmple gene set.
-
-&nbsp;
-
-```R
-
-# A graph ...
-sXG <- igraph::graph_from_edgelist(matrix(c(xSetEdges$a,
-                                            xSetEdges$b),
-                                          ncol = 2,
-                                          byrow = FALSE),
-                                   directed = FALSE)
-
-# degree distribution
-dg <- igraph::degree(sXG)
-hist(dg, col="#A5CCF5",
-     main = "Node degrees of example gene network",
-     xlab = "Degree", ylab = "Counts")
-
-# scale free? log(rank) vs. log(frequency)
-freqRank <- table(dg)
-x <- log10(as.numeric(names(freqRank)) + 1)
-y <- log10(as.numeric(freqRank))
-plot(x, y,
-     type = "b",
-     pch = 21, bg = "#A5CCF5",
-     xlab = "log(Rank)", ylab = "log(frequency)",
-     main = "Zipf's law governing the example gene network")
-
-# Regression line
-ab <- lm(y ~ x)
-abline(ab, col = "#FF000077", lwd = 0.7)
-
-```
-
-![](./inst/img/xGenes_Zipf_plot_1.svg?sanitize=true "xGenes degree distribution (log(#)/log(f))")
-
-
-```R
-
-# What are the ten highest degree nodes?
-x <- sort(dg, decreasing = TRUE)[1:10]
-cat(sprintf("\t%d:\t%s\t(%s)\n", x, names(x), HGNC[names(x), "name"]))
-
-# 15:	VAMP8	(vesicle associated membrane protein 8)
-# 15:	RAB7A	(RAB7A, member RAS oncogene family)
-# 12:	PIK3C3	(phosphatidylinositol 3-kinase catalytic subunit type 3)
-# 12:	GABARAP	(GABA type A receptor-associated protein)
-# 12:	SNAP29	(synaptosome associated protein 29)
-# 12:	STX17	(syntaxin 17)
-# 11:	GABARAPL2	(GABA type A receptor associated protein like 2)
-# 11:	BECN1	(beclin 1)
-# 11:	GABARAPL1	(GABA type A receptor associated protein like 1)
-# 10:	UVRAG	(UV radiation resistance associated)
-
-
-# Plot the network
-oPar <- par(mar= rep(0,4)) # Turn margins off
-set.seed(112358)
-plot(sXG,
-     layout = igraph::layout_with_fr(sXG),
-     vertex.color=heat.colors(max(igraph::degree(sXG)+1))[igraph::degree(sXG)+1],
-     vertex.size = 1.5 + (1.2 * igraph::degree(sXG)),
-     vertex.label.cex = 0.2 + (0.025 * igraph::degree(sXG)),
-     edge.width = 2,
-     vertex.label = igraph::V(sXG)$name,
-     vertex.label.family = "sans",
-     vertex.label.cex = 0.9)
-set.seed(NULL)
-par(oPar)
-
-# we see several cliques (or near-cliques), possibly indicative of
-# physical complexes.
-
-```
-
-![](./inst/img/xGenes_Network_1.svg?sanitize=true "xGenes functional interaction network")
-
-
 &nbsp;
 
 ## 8 References
