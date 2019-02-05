@@ -9,7 +9,7 @@ recoverIDs <- function(ensg, mart = myMart) {
   #     "HGNC" must exist in the global namespace
   # Value:
   #     result: a dataframe with columns "ensg" containing the ensemble
-  #             peptide IDs of the input that could be mapped, and "entrez",
+  #             gene IDs of the input that could be mapped, and "entrez",
   #             which contains the corresponding entrez symbols, and rownames
   #             ensg.
   
@@ -23,11 +23,11 @@ recoverIDs <- function(ensg, mart = myMart) {
   
   # Define which attributes we want to fetch from biomart, and which columns
   # those match to in "HGNC":
-  myAtt <- data.frame(biomart = c("uniprotswissprot",
-                                  "refseq_dna",
+  myAtt <- data.frame(biomart = c("hgnc_symbol",
+                                  "entrezgene",
                                   "ucsc"),
-                      HGNC =    c("UniProtID",
-                                  "RefSeqID",
+                      HGNC =    c("sym",
+                                  "GeneID",
                                   "UCSCID"),
                       stringsAsFactors = FALSE)
   
@@ -55,7 +55,7 @@ recoverIDs <- function(ensg, mart = myMart) {
       # some IDs were returned
       IDs <- bm[ , thisBmAtt]
       # get the symbol for a match, NA otherwise
-      entrez <- HGNC$sym[match(IDs, HGNC[ , thisHuAtt], incomparables = NA)]
+      entrez <- HGNC$GeneID[match(IDs, HGNC[ , thisHuAtt], incomparables = NA)]
       sel <- ( ! is.na(entrez))
       bm$entrez[sel] <- entrez[sel] # Overwrite those that are not NA.
       # If there are multiple IDs returned for one row
@@ -63,11 +63,10 @@ recoverIDs <- function(ensg, mart = myMart) {
       # matched.
     }
   }
-  # Post-process. Careful: ensemble_peptide_ids are not necessarily
-  # unique in biomart output.
-  bm <- bm[! is.na(bm$entrez), c("ensembl_peptide_id", "entrez")]
-  bm <- bm[! duplicated(bm$ensembl_peptide_id), ]
-  matchedIDs <- match(ensg, bm$ensembl_peptide_id)
+  # Post-process. 
+  bm <- bm[! is.na(bm$entrez), c("ensembl_gene_id", "entrez")]
+  bm <- bm[! duplicated(bm$ensembl_gene_id), ]
+  matchedIDs <- match(ensg, bm$ensembl_gene_id)
   
   esMap <- data.frame(ensg = ensg,
                       entrez = bm$entrez[matchedIDs],
@@ -83,8 +82,8 @@ recoverIDs <- function(ensg, mart = myMart) {
 
 # ====  TESTS  =================================================================
 if (FALSE) {
-  # Enter your function tests here...
-  
+  test <- recoverIDs(c("ENSG00000121410", "ENSG00000268895"))
+  testthat::expect_identical(test[1,2], 1)
 }
 
 

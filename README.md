@@ -136,6 +136,13 @@ if (! requireNamespace("stringi") {
 }
 ```
 
+**`testthat`** is a package for testing. We use expect_that() 
+&nbsp;
+```R
+if (! requireNamespace("testthat") {
+  install.packages("testthat")
+}
+```
 
 &nbsp;
 
@@ -403,10 +410,10 @@ A function for using biomaRt for more detailed mapping is in the file `inst/scri
 
   # use our function recoverIDs() to try and map the unmapped ensp IDs
   # to symbois via other cross-references
-  recoveredENSP <- recoverIDs(unmappedENSP)
+  recoveredENSG <- recoverIDs(unmappedENSG)
 
   # how many did we find
-  nrow(recoveredENSP)  # 11. Not much, but it's honest work.
+  nrow(recoveredENSG)  # 0
 
   # add the recovered symbols to ensp2sym
   ensp2sym[recoveredENSP$ensp] <- recoveredENSP$sym
