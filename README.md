@@ -491,172 +491,38 @@ Given our mapping tool, we can now annotate gene sets with HPA data.
 
 ```R
 
-# Read the interaction graph data: this is a weighted graph defined as an
-# edge list with gene a, gene b, confidence score (0, 999).
-
-ensg2entrez <- readr::read_delim(file.path(../data", "normal_tissue.tsv""),
-                         delim = " ",
-                         skip = 1,
-                         col_names = c("a", "b", "score"))  # 11,759,454 rows
-
-# do they all have the right tax id?
-all(grepl("^9606\\.", ensg2entrez$a))  # TRUE
-all(grepl("^9606\\.", ensg2entrez$b))  # TRUE
-# remove "9606." prefix
-ensg2entrez$a <- gsub("^9606\\.", "", ensg2entrez$a)
-ensg2entrez$b <- gsub("^9606\\.", "", ensg2entrez$b)
-
-# how are the scores distributed?
-
-minScore <- 0
-maxScore <- 1000
-# we define breaks to lie just below the next full number
-hist(ensg2entrez$score[(ensg2entrez$score >= minScore) & (ensg2entrez$score <= maxScore)],
-     xlim = c(minScore, maxScore),
-     breaks = c((seq(minScore, (maxScore - 25), by = 25) - 0.1), maxScore),
-     main = "STRING edge scores",
-     col = colorRampPalette(c("#FFFFFF","#8888A6","#FF6655"), bias = 2)(40),
-     xlab = "scores: (p * 1,000)",
-     ylab = "p",
-     xaxt = "n")
-axis(1, at = seq(minScore, maxScore, by = 100))
-abline(v = 900, lwd = 0.5)
-
-```
-
-![](./inst/img/score_hist_1.svg?sanitize=true "STRING score distribution")
-
-We know that "channel 7 - databases" interactions are arbitrarily scored as _p_ = 0.9. This is clearly reflected in the scores distribution.
-
-```R
-# Zoom in
-
-minScore <- 860
-maxScore <- 1000
-hist(ensg2entrez$score[(ensg2entrez$score >= minScore) & (ensg2entrez$score <= maxScore)],
-     xlim = c(minScore, maxScore),
-     breaks = c((seq(minScore, (maxScore - 4), by = 4) - 0.1), maxScore),
-     main = "STRING edge scores",
-     col = colorRampPalette(c("#FFFFFF","#8888A6","#FF6655"), bias = 1.2)(35),
-     xlab = "scores: (p * 1,000)",
-     ylab = "p",
-     xaxt = "n")
-axis(1, at = seq(minScore, maxScore, by = 10))
-abline(v = 900, lwd = 0.5)
-
-```
-
-![](./inst/img/score_hist_2.svg?sanitize=true "STRING score distribution (detail)")
-
-
-```R
-
-# Focus on the cutoff of scores at p == 0.9
-sum(ensg2entrez$score >= 880 & ensg2entrez$score < 890) # 5,706
-sum(ensg2entrez$score >= 890 & ensg2entrez$score < 900) # 5,666
-sum(ensg2entrez$score >= 900 & ensg2entrez$score < 910) # 315,010
-sum(ensg2entrez$score >= 910 & ensg2entrez$score < 920) # 83,756
-
-# We shall restrict our dataset to high-confidence edges with p >= 0.9
-
-ensg2entrez <- ensg2entrez[ensg2entrez$score >= 900, ]  # 648,304 rows of high-confidence edges
-
-```
-
-&nbsp;
-
-Are these edges duplicated? I.e. are there (a, b) and (b, a) edges in the dataset? The common way to test for that is to created a composite string of the two elements, sorted. Thus if we have an edge betwween `"this"` and `"that"`, and an edge between `"that"` and `"this"`, these edges both get mapped to a key `"that:this"` - and the duplication is easy to recognize.
-
-&nbsp;
-
-```R
-
-sPaste <- function(x, collapse = ":") {
-  return(paste(sort(x), collapse = collapse))
-}
-ensg2entrez$key <- apply(ensg2entrez[ , c("a", "b")], 1, sPaste)
-
-length(ensg2entrez$key) # 648,304
-length(unique(ensg2entrez$key)) # 324,152  ... one half of the edges are duplicates!
-
-# We can remove those edges. And the keys.
-ensg2entrez <- ensg2entrez[( ! duplicated(ensg2entrez$key)), c("a", "b", "score") ]
-```
-
-&nbsp;
-
-Finally we map the ENSP IDs to HGNC symbols. Using our tool, this is a simple assignment:
-
-&nbsp;
-
-```R
-
-ensg2entrez$a <- EntrezMap[ensg2entrez$a]
-ensg2entrez$b <- EntrezMap[ensg2entrez$b]
+hpaAnnotated <- merge(ensg2entrez, tmp)
 
 # Validate:
 # how many rows could not be mapped
-any(grepl("ENSP", ensg2entrez$a))  # Nope
-any(grepl("ENSP", ensg2entrez$b))  # None left here either
-sum(is.na(ensg2entrez$a)) # 705
-sum(is.na(ensg2entrez$b)) # 3501
-
-# we remove edges in which either one or the other node is NA to
-# create our final data:
-STRINGedges <- ensg2entrez[( ! is.na(ensg2entrez$a)) & ( ! is.na(ensg2entrez$b)), ] # 319,997 edges
+  sum(is.na(hpaAnnotated$ENSG))   # 0
+  sum(is.na(hpaAnnotated$entrez))   # 3333 (high because of many 
+                                    # ENSG repeats)
 
 # Done.
 # Save result
-save(STRINGedges, file = file.path("..", "data", "STRINGedges.RData"))
-# That's only 1.4 MB actually.
+save(hpaAnnotated, file = file.path("..", "data", "hpaAnnotated.RData"))
 
 ```
 
 &nbsp;
 
-#### 5 Network statistics
-
-Simple characterization of network statistics:
+#### 5 Analyzing the Data Coverage
 
 &nbsp;
 
 ```R
 
-# number of nodes
-(N <- length(unique(c(STRINGedges$a, STRINGedges$b))))  # 12,196 genes
+# number of genes
+N <- length(unique(c(hpaAnnotated$ENSG)))  # 13199 genes
 
 # coverage of human protein genes
-N * 100 / sum(HGNC$type == "protein")  # 63.4 %
+N * 100 / sum(HGNC$type == "protein")  # 68.67326 %
 
-# number of edges
-nrow(STRINGedges)   # 319,997
-
-# any self-edges?
-any(STRINGedges$a == STRINGedges$b) # yes
-which(STRINGedges$a == STRINGedges$b)
-STRINGedges[which(STRINGedges$a == STRINGedges$b), ]
-#        a     b   score     # just one
-#  1 ZBED6 ZBED6     940
-
-
-# average number of interactions
-nrow(STRINGedges) / N  # 26.2  ... that seems a lot - how is this distributed?
-
-# degree distribution
-deg <- table(c(STRINGedges$a, STRINGedges$b))
-summary(as.numeric(deg))
-
-hist(deg, breaks=50,
-     xlim = c(0, 1400),
-     col = "#3fafb388",
-     main = "STRING nodes degree distribution",
-     xlab = "degree (undirected graph)",
-     ylab = "Counts")
-rug(deg, col = "#EE5544")
 
 ```
 
-![](./inst/img/STRING_degrees_1.svg?sanitize=true "STRING network degree distribution")
+
 
 
 ## 6 Biological validation: network properties
