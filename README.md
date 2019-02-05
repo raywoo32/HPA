@@ -592,33 +592,33 @@ cat(sprintf("\t%s\t(%s)\n", HGNC[xSet[x], "sym"], HGNC[xSet[x], "name"]))
 # VPS39	(VPS39, HOPS complex subunit)
 
 
-# For our annotation, we select edges for which both nodes are part of the
-# example set:
-sel <- (unique(hpaAnnotated$HGNC) %in% xSet) 
-xSetEdges <- hpaAnnotated[sel, c("HGNC")]
+# For our example annotation, Tissue data
+sel <- (hpaAnnotated$HGNC %in% xSet) & (hpaAnnotated$HGNC %in% xSet)
+xAnnotated <- hpaAnnotated[sel, c("HGNC", "Tissue")]
+
 # Statistics:
-nrow(xSetEdges)   # 206
+nrow(xAnnotated)   # 5796
 
 # Save the annotated set
 
-writeLines(c("a\tb",
-             sprintf("%s\t%s", xSetEdges$a, xSetEdges$b)),
-           con = "xSetEdges.tsv")
+writeLines(c("HGNC\tTissue",
+             sprintf("%s\t%s", xAnnotated$HGNC, xAnnotated$Tissue)),
+           con = "xAnnotated.tsv")
 
 # The data set can be read back in again (in an RStudio session) with
-myXset <- read.delim(file.path("inst", "extdata", "xSetEdges.tsv"),
+myXset <- read.delim(file.path("inst", "extdata", "xAnnotated.tsv"),
                      stringsAsFactors = FALSE)
 
 # From an installed package, the command would be:
 myXset <- read.delim(system.file("extdata",
-                                  "xSetEdges.tsv",
-                                  package = "BCB420.2019.STRING"),
+                                  "xAnnotated.tsv",
+                                  package = "HPA"),
                      stringsAsFactors = FALSE)
 
-
 # confirm
-nrow(myXset) # 206
-colnames(myXset) == c("a", "b") # TRUE TRUE
+nrow(myXset) # equal
+colnames(myXset) == c("HGNC", "Tissue") # TRUE TRUE
+
 
 ```
 &nbsp;
@@ -634,6 +634,10 @@ Example code for biomaRt was taken taken from `BIN-PPI-Analysis.R` and example c
 * Szklarczyk, D., Gable, A. L., Lyon, D., Junge, A., Wyder, S., Huerta-Cepas, J., Simonovic, M., Doncheva, N. T., Morris, J. H., Bork, P., Jensen, L. J., & von Mering, C. (2019). STRING v11: protein-protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets. [_Nucleic acids research_, D1, D607-D613](https://academic.oup.com/nar/article/47/D1/D607/5198476).
 
 * Huang, J. K., Carlin, D. E., Yu, M. K., Zhang, W., Kreisberg, J. F., Tamayo, P., & Ideker, T. (2018). Systematic Evaluation of Molecular Networks for Discovery of Disease Genes. _Cell systems_, 4, 484-495.e5.
+
+https://stackoverflow.com/questions/10085806/extracting-specific-columns-from-a-data-frame
+https://stackoverflow.com/questions/17108191/how-to-export-proper-tsv
+https://www.proteinatlas.org/
 
 &nbsp;
 
