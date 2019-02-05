@@ -627,27 +627,43 @@ colnames(myXset) == c("HGNC", "Tissue") # TRUE TRUE
 
 &nbsp;
 
-Example code for biomaRt was taken taken from `BIN-PPI-Analysis.R` and example code for work with igraph was taken from `FND-MAT-Graphs_and_networks.R`, both in the [ABC-Units project](https://github.com/hyginn/ABC-units) (Steipe, 2016-1019). A preliminary version of a STRING import script was written as [starter code for the 2018 BCB BioHacks Hackathon](https://github.com/hyginn/ABC-units) at the UNiversity of Toronto (Steipe, 2018) - this script draws on the former.
+* The vast majority of this package is taken from [Boris Steipe STRING package](https://github.com/hyginn/BCB420.2019.STRING) (Steipe, 2018). 
 
 &nbsp;
 
-* Szklarczyk, D., Gable, A. L., Lyon, D., Junge, A., Wyder, S., Huerta-Cepas, J., Simonovic, M., Doncheva, N. T., Morris, J. H., Bork, P., Jensen, L. J., & von Mering, C. (2019). STRING v11: protein-protein association networks with increased coverage, supporting functional discovery in genome-wide experimental datasets. [_Nucleic acids research_, D1, D607-D613](https://academic.oup.com/nar/article/47/D1/D607/5198476).
+* Data from this project was taken from the Human Protein Atlas [Normal Tissue Data] https://www.proteinatlas.org/about/download/normal_tissue.tsv.zip These are the primary sources which made the HPA: 
 
-* Huang, J. K., Carlin, D. E., Yu, M. K., Zhang, W., Kreisberg, J. F., Tamayo, P., & Ideker, T. (2018). Systematic Evaluation of Molecular Networks for Discovery of Disease Genes. _Cell systems_, 4, 484-495.e5.
+* Uhlén M et al, 2015. Tissue-based map of the human proteome. Science
+PubMed: 25613900 DOI: 10.1126/science.1260419	
 
-https://stackoverflow.com/questions/10085806/extracting-specific-columns-from-a-data-frame
-https://stackoverflow.com/questions/17108191/how-to-export-proper-tsv
-https://www.proteinatlas.org/
+* Thul PJ et al, 2017. A subcellular map of the human proteome. Science.
+PubMed: 28495876 DOI: 10.1126/science.aal3321	
+
+* Uhlen M et al, 2017. A pathology atlas of the human cancer transcriptome. Science.
+PubMed: 28818916 DOI: 10.1126/science.aan2507	
+
+&nbsp;
+
+* Information about HGNC was taken from the [following] https://github.com/HGNC
 
 &nbsp;
 
-## 9 Acknowledgements
-
-Thanks to Simon Kågedal's very useful [PubMed to APA reference tool](http://helgo.net/simon/pubmed/).
-
-User `Potherca` [posted on Stack](https://stackoverflow.com/questions/13808020/include-an-svg-hosted-on-github-in-markdown) how to use the parameter `?sanitize=true` to display `.svg` images in github markdown.
+* Information about Biomart and usage was taken from [here] https://useast.ensembl.org/info/data/biomart/biomart_r_package.html
 
 &nbsp;
+
+*  Stackoverflow and other forums were used in troubleshooting:  
+
+* [1] https://stackoverflow.com/questions/10085806/extracting-specific-columns-from-a-data-frame User: Joshua Ulrich
+
+* [2] https://stackoverflow.com/questions/17108191/how-to-export-proper-tsv User: alexwhan
+
+* [3] https://stackoverflow.com/questions/28543517/how-can-i-convert-ensembl-id-to-gene-symbol-in-r User: NicE
+
+* [4] http://seqanswers.com/forums/archive/index.php/t-8934.html User: dariober
+
+* [5] https://stats.stackexchange.com/questions/11193/how-do-i-remove-all-but-one-specific-duplicate-record-in-an-r-data-frame User: wch
+
 
 &nbsp;
 
