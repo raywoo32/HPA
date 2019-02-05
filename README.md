@@ -668,7 +668,7 @@ PubMed: 28818916 DOI: 10.1126/science.aan2507
 
 * [5] https://stats.stackexchange.com/questions/11193/how-do-i-remove-all-but-one-specific-duplicate-record-in-an-r-data-frame User: wch
 
-
+* [6] https://stackoverflow.com/questions/13297995/changing-font-size-and-direction-of-axes-text-in-ggplot2 User: meduvigo
 &nbsp;
 
 <!-- [END] -->
