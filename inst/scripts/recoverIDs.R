@@ -23,6 +23,8 @@ recoverIDs <- function(ensg, mart = myMart) {
   
   # Define which attributes we want to fetch from biomart, and which columns
   # those match to in "HGNC":
+  myMart <- biomaRt::useMart("ensembl", dataset="hsapiens_gene_ensembl")
+  
   myAtt <- data.frame(biomart = c("hgnc_symbol",
                                   "entrezgene",
                                   "ucsc"),
@@ -83,7 +85,7 @@ recoverIDs <- function(ensg, mart = myMart) {
 # ====  TESTS  =================================================================
 if (FALSE) {
   test <- recoverIDs(c("ENSG00000121410", "ENSG00000268895"))
-  testthat::expect_identical(test[1,2], 1)
+  testthat::expect_identical(test[1,2], 1) #Tests passed
 }
 
 
