@@ -118,13 +118,12 @@ if (! requireNamespace("biomaRt", quietly = TRUE)) {
 }
 ```
 
-**`igraph`** is THE go-to package for everything graph related. We use it here to
-compute some statistics on the STRING- and example graphs and plot.
+**`ggplot2`** is a graph package used to visualize data
 &nbsp;
 
 ```R
-if (! requireNamespace("igraph")) {
-  install.packages("igraph")
+if (! requireNamespace("ggplot2")) {
+  install.packages("ggplot2")
 }
 ```
 
@@ -522,60 +521,25 @@ N * 100 / sum(HGNC$type == "protein")  # 68.67326 %
 
 ```
 
+## 6 Biological validation: visuallizing the data
 
-
-
-## 6 Biological validation: network properties
-
-For more detailed validation, we need to look at network properties 
+To see the biological significance, we need to visualize the data 
 
 &nbsp;
 
 ```R
 
-sG <- igraph::graph_from_edgelist(matrix(c(STRINGedges$a,
-                                           STRINGedges$b),
-                                         ncol = 2,
-                                         byrow = FALSE),
-                                  directed = FALSE)
-
-# degree distribution
-dg <- igraph::degree(sG)
-
-# is this a scale-free distribution? Plot log(rank) vs. log(frequency)
-freqRank <- table(dg)
-x <- log10(as.numeric(names(freqRank)) + 1)
-y <- log10(as.numeric(freqRank))
-plot(x, y,
-     type = "b",
-     pch = 21, bg = "#A5F5CC",
-     xlab = "log(Rank)", ylab = "log(frequency)",
-     main = "Zipf's law governing the STRING network")
-
-# Regression line
-ab <- lm(y ~ x)
-abline(ab, col = "#FF000077", lwd = 0.7)
-
-```
-
-![](./inst/img/STRING_Zipf_plot_1.svg?sanitize=true "STRING score distribution (detail)")
-
-
-```R
-# What are the ten highest degree nodes?
-x <- sort(dg, decreasing = TRUE)[1:10]
-cat(sprintf("\t%d:\t%s\t(%s)\n", x, names(x), HGNC[names(x), "name"]))
-# 1343:	RPS27A	(ribosomal protein S27a)
-# 1339:	UBA52	(ubiquitin A-52 residue ribosomal protein fusion product 1)
-# 1128:	UBC	(ubiquitin C)
-# 1124:	UBB	(ubiquitin B)
-# 918:	GNB1	(G protein subunit beta 1)
-# 894:	GNGT1	(G protein subunit gamma transducin 1)
-# 562:	APP	(amyloid beta precursor protein)
-# 550:	CDC5L	(cell division cycle 5 like)
-# 530:	GNG2	(G protein subunit gamma 2)
-# 526:	RBX1	(ring-box 1)
-
+# number of genes in tissue bar graph 
+ggplot2::ggplot(hpaAnnotated, ggplot2::aes(x = factor(hpaAnnotated$Tissue))) +
+    ggplot2::geom_bar() +
+    ggplot2::geom_bar(stat="count", width=0.7, fill="steelblue")+
+    ggplot2::theme_minimal()
+  
+# number of genes in cell type bar graph
+ggplot2::ggplot(hpaAnnotated, ggplot2::aes(x = factor(hpaAnnotated$"Cell Type"))) +
+    ggplot2::geom_bar() +
+    ggplot2::geom_bar(stat="count", width=0.7, fill="steelblue")+
+    ggplot2::theme_minimal()
 
 ```
 
