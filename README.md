@@ -1,10 +1,10 @@
-# `HPA
+# `HPA`
 
 #### (Human Protein Atlas data annotatation of human genes)
 
 &nbsp;
 
-###### [Rachel Woo](https://orcid.org/ORCID: 0000-0002-1387-487X),  &lt;rachelsam.woo@mail.utoronto.ca&gt;
+###### [Rachel Woo](https://orcid.org/ORCID: 0000-0002-1387-487X),rachelsam.woo@mail.utoronto.ca
 
 ----
 
@@ -67,9 +67,9 @@ HPA obtains its data through manually analyzed RNA-seq expriments. For each gene
 
 The data in HPA we will be using is the normal tissue dataset. This results in the tab-separated file we will be analyzing. This file includes: 
 
-1. **Ensembl gene identifier: 
-2. **Tissue name: 
-3. **Annotated cell type: 
+1. **Ensembl gene identifier
+2. **Tissue name
+3. **Annotated cell type
 4. **Expression value 
 5. **Gene reliability 
 
@@ -80,17 +80,16 @@ The data in HPA we will be using is the normal tissue dataset. This results in t
 To download the source data from HPA ... :
 
 1. Navigate to the [**Human Protein Atlas** database]https://www.proteinatlas.org/) and follow the link to the [download section](https://www.proteinatlas.org/download).
-2. Download "normal_tissue.tsv.zip": (Warning: large).
+2. Download the following file:
 
-* `9606.protein.links.v11.0.txt.gz` (71.2 Mb)	protein network data (scored links between proteins);
+* normal_tissue.tsv.zip (4.4 MB)
 
-4. Uncompress the file and place it into a sister directory of your working directory which is called `data`. (It should be reachable with `file.path("..", "data")`). **Warning:**  `../data/9606.protein.links.v11.0.txt` is 541 Mb.
-
+4. Uncompress the file and place it into a sister directory of your working directory which is called `data`. (It should be reachable with `file.path("..", "data")`).
 &nbsp;
 
 ## 4 Mapping ENSEMBL IDs to HGNC symbols
 
-STRING network nodes are Ensembl protein IDs. These can usually be mapped to HGNC symbols, but there might be ambiguities e.g. because alternatively spliced proteins might have different ENSP IDs that  map to the same HGNC symbol, or HGNC symbols have changed (they are frequently updated). To provide the best possible interpretation, we need to build a map of ENSP IDs to HGNC symbols. This requires care, because it is not guaranteed that all ENSP IDs can be mapped uniquely.** However, the usability of the dataset for annotation depends on the quality of this mapping.**
+The main information from HPA is the Ensemble gene ID and HGNC. This information can be used to find corresponding mRNA or proteins. We will build a map of Ensemble gene ID to HGNC to verify the dataset results, Ensemble gene ID to unique Ensemble peptide. 
 
 &nbsp;
 
@@ -129,6 +128,15 @@ if (! requireNamespace("igraph")) {
 }
 ```
 
+**`stringi`** is a package for string manipulation. We use stri_isempty(). 
+&nbsp;
+```R
+if (! requireNamespace("stringi") {
+  install.packages("igraph")
+}
+```
+
+
 &nbsp;
 
 Next we source a utility function that we will use later, for mapping
@@ -161,40 +169,19 @@ load(url(myURL))  # loads HGNC data frame
 &nbsp;
 
 ```R
-  # Read the interaction graph data: this is a weighted graph defined as an
-  # edge list with gene a, gene b, confidence score (0, 999).
+  # Read in original data format 
+  
+  tmp <- readr::read_tsv(file.path("../data", "normal_tissue.tsv"),
+                         skip = 1, #skip gets rid of header
+                         col_names = c("ENSG", "HGNC", "Tissue", "Cell Type",
+                                       "Level", "Reliability"))  # 1 053 330 rows
+  
 
-  tmp <- readr::read_delim(file.path("../data", "9606.protein.links.v11.0.txt"),
-                           delim = " ",
-                           skip = 1,
-                           col_names = c("a", "b", "score"))  # 11,759,454 rows
-
-  # what does this set look like?
-  head(tmp)
-  #    A tibble: 6 x 3
-  #     a                    b                    score
-  #     <chr>                <chr>                <dbl>
-  #   1 9606.ENSP00000000233 9606.ENSP00000272298   490
-  #   2 9606.ENSP00000000233 9606.ENSP00000253401   198
-  #   3 9606.ENSP00000000233 9606.ENSP00000401445   159
-  #   4 9606.ENSP00000000233 9606.ENSP00000418915   606
-  #   5 9606.ENSP00000000233 9606.ENSP00000327801   167
-  #   6 9606.ENSP00000000233 9606.ENSP00000466298   267
-
-  # Columns a and b are Ensembl protein IDs, column "score" is the probability
-  # of an edge representing a real functional interaction, times 1,000 rounded
-  # to integer. Each of these IDs needs to be mapped to its corresponding
-  # HGNC symbol.
-
-  # Do all elements have the right tax id?
-  all(grepl("^9606\\.", tmp$a))  # TRUE
-  all(grepl("^9606\\.", tmp$b))  # TRUE
-  # remove "9606." prefix
-  tmp$a <- gsub("^9606\\.", "", tmp$a)
-  tmp$b <- gsub("^9606\\.", "", tmp$b)
+  # tmp is in the following format 
+  # <ENSG> <HGNC> <Tissue> <Cell Type> <Level> Reliability> 
 
   # how many unique IDs do we have to map?
-  uENSP <- unique(c(tmp$a, tmp$b))  # 19,354 IDs need to be mapped
+  uniqueENSG <- unique(tmp$ENSG)  # 13,206 elements
 
 ```
 
@@ -229,6 +216,8 @@ Note:
 
 Therefore: a good ID mapping tool contains as many mappings as possible for the target set, and every ID of the source set should be present and unique. Incidentally, uniqueness is structurally enforced: in R, names, rownames and colnames have to be unique in the first place.
 
+Since the Dataset already comes with HGNC, I found the protein IDs and entrezgene IDs for this dataset.
+
 &nbsp;
 
 ```R
@@ -236,20 +225,30 @@ Therefore: a good ID mapping tool contains as many mappings as possible for the 
   # Map ENSP to HGNC symbols: open a "Mart" object ..
   myMart <- biomaRt::useMart("ensembl", dataset="hsapiens_gene_ensembl")
 
-  tmp <- biomaRt::getBM(filters = "ensembl_peptide_id",
-                             attributes = c("ensembl_peptide_id",
-                                            "hgnc_symbol"),
-                             values = uENSP,
+  ensg2ensp <- biomaRt::getBM(filters = "ensembl_gene_id",
+                             attributes = c("ensembl_gene_id",
+                                            "ensembl_peptide_id"),
+                             values = uniqueENSG,
                              mart = myMart)
 
+  colnames(ensg&enspc) <- c("ENSG", "ENSP")
+
   head(tmp)
-  #       ensembl_peptide_id   hgnc_symbol
-  #   1      ENSP00000216487          RIN3
-  #   2      ENSP00000075120        SLC2A3
-  #   3      ENSP00000209884        KLHL20
-  #   4      ENSP00000046087          ZPBP
-  #   5      ENSP00000205214         AASDH
-  #   6      ENSP00000167106         VASH1
+  #    ENSG            HGNC   Tissue        `Cell Type`         Level        Reliability
+  #   <chr>           <chr>  <chr>         <chr>               <chr>        <chr>      
+  #1  ENSG00000000003 TSPAN6 adrenal gland glandular cells     Not detected Approved   
+  #2  ENSG00000000003 TSPAN6 appendix      glandular cells     Medium       Approved   
+  #3  ENSG00000000003 TSPAN6 appendix      lymphoid tissue     Not detected Approved   
+  #4  ENSG00000000003 TSPAN6 bone marrow   hematopoietic cells Not detected Approved   
+  #5  ENSG00000000003 TSPAN6 breast        adipocytes          Not detected Approved   
+  #6  ENSG00000000003 TSPAN6 breast        glandular cells     High         Approved   
+
+  # check values
+  any(is.na(ensg2ensp$ENSG)) # FALSE
+  any(is.na(ensg2ensp$ENSP)) # FALSE
+  nrow(ensg2ensp)            # 8 4684
+  length(unique(ensg2ensp$ENSG))  # 13 199
+  length(unique(ensg2ensp$ENSP))   # 13 199
 
   nrow(tmp)  # 19,109  symbols have been retrieved for the 19,354 ENSP IDs.
   
@@ -264,7 +263,8 @@ There are three possible problems with the data that biomart returns:
 once in `tmp$ensembl_peptide_id`, with different mapped symbols.
 
 ```R
-  sum(duplicated(tmp$ensembl_peptide_id))  # Indeed: three duplicates!
+  sum(duplicated(tmp$ENSG))  # Indeed: three duplicates!
+  sum(duplicated(ensg2HGNC$ENSG))
 ```
 
 &nbsp;
