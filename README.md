@@ -570,29 +570,29 @@ xSet <- c("AMBRA1", "ATG14", "ATP2A1", "ATP2A2", "ATP2A3", "BECN1", "BECN2",
           "VAMP8", "VAPA", "VPS11", "VPS16", "VPS18", "VPS33A", "VPS39",
           "VPS41", "VTI1B", "YKT6")
 
-# which example genes are not among the known nodes?
-x <- which( ! (xSet %in% c(STRINGedges$a, STRINGedges$b)))
+# which example genes are not among the annotated genes?
+x <- which( ! (xSet %in% c(hpaAnnotated$HGNC, hpaAnnotated$Tissue)))
 cat(sprintf("\t%s\t(%s)\n", HGNC[xSet[x], "sym"], HGNC[xSet[x], "name"]))
 
 # BECN2	(beclin 2)
-# EPG5	(ectopic P-granules autophagy protein 5 homolog)
-# LAMP3	(lysosomal associated membrane protein 3)
+# BIRC6	(baculoviral IAP repeat containing 6)
+# GABARAP	(GABA type A receptor-associated protein)
+# IRGM	(immunity related GTPase M)
 # LAMP5	(lysosomal associated membrane protein family member 5)
-# PLEKHM1	(pleckstrin homology and RUN domain containing M1)
-# RUBCNL	(rubicon like autophagy enhancer)
-# TIFA	(TRAF interacting protein with forkhead associated domain)
-# TMEM175	(transmembrane protein 175)
-# TPCN1	(two pore segment channel 1)
-# TPCN2	(two pore segment channel 2)
-
-# That make sense - generally fewer interactions have been recorded for
-# membrane proteins.
+# MAP1LC3C	(microtubule associated protein 1 light chain 3 gamma)
+# RAB39A	(RAB39A, member RAS oncogene family)
+# RAB7B	(RAB7B, member RAS oncogene family)
+# TFEB	(transcription factor EB)
+# VAMP3	(vesicle associated membrane protein 3)
+# VPS33A	(VPS33A, CORVET/HOPS core subunit)
+# VPS39	(VPS39, HOPS complex subunit)
 
 
 # For our annotation, we select edges for which both nodes are part of the
 # example set:
-sel <- (STRINGedges$a %in% xSet) & (STRINGedges$b %in% xSet)
-xSetEdges <- STRINGedges[sel, c("a", "b")]
+sel <- (unique(hpaAnnotated$HGNC) %in% xSet) 
+sel <- (hpaAnnotated$HGNC %in% xSet) 
+xSetEdges <- hpaAnnotated[sel, c("HGNC")]
 # Statistics:
 nrow(xSetEdges)   # 206
 
