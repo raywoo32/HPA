@@ -537,13 +537,17 @@ To see the biological significance, we need to visualize the data
 ggplot2::ggplot(hpaAnnotated, ggplot2::aes(x = factor(hpaAnnotated$Tissue))) +
     ggplot2::geom_bar() +
     ggplot2::geom_bar(stat="count", width=0.7, fill="steelblue")+
-    ggplot2::theme_minimal()
+    ggplot2::theme(axis.text.x = ggplot2::element_text(color = "grey20", 
+                    size = 10, angle = 90, hjust = .5, vjust = .5, face = "plain"),)+
+    ggplot2::labs(x="Tissue Type", y="Number of Genes")
   
 # number of genes in cell type bar graph
 ggplot2::ggplot(hpaAnnotated, ggplot2::aes(x = factor(hpaAnnotated$"Cell Type"))) +
     ggplot2::geom_bar() +
     ggplot2::geom_bar(stat="count", width=0.7, fill="steelblue")+
-    ggplot2::theme_minimal()
+    ggplot2::theme(axis.text.x = ggplot2::element_text(color = "grey20", 
+                    size = 10, angle = 90, hjust = .5, vjust = .5, face = "plain"),)+
+    ggplot2::labs(x="Cell Type", y="Number of Genes")
 
 ```
 
